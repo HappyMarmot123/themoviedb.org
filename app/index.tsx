@@ -1,9 +1,9 @@
 import Label from "@/components/Label";
 import HorizonSliderPaging from "@/components/HorizonSliderPaging";
-import { useState } from "react";
 import { StyleSheet, View, Text, SafeAreaView, ScrollView } from "react-native";
 import { useWindowDimensions } from "react-native";
 import HorizonSlider from "@/components/HorizonSlider";
+import Header from "@/components/Header";
 
 export default function HomeScreen() {
   // 라우저 창의 현재 크기(너비와 높이)를 추적하는 React 훅이다.
@@ -13,11 +13,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { minHeight: height }]}>
-      <View className="border-[1px] border-orange-300 my-6 px-[10vw] py-[2.5vw]">
-        <Text className="text-orange-300 text-2xl font-bold">
-          HappyMarmot Clone Coding
-        </Text>
-      </View>
+      <Header text="Movies" />
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <HorizonSliderPaging height={height} width={width} />
         <Label title="See All Movies" buttonText="Filter">

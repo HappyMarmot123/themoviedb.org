@@ -11,8 +11,9 @@ export default function HorizonSlider({
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // 각 슬라이드의 너비 계산
-  const slideWidth = (width - 40) / 3.39; // 3.3으로 나누어 4번째 슬라이드가 살짝 보이게 함
-  const gap = 10; // 슬라이드 간 간격
+  //4번째 슬라이드가 살짝 보이게 함
+  const slideWidth = (width - 40) / 3.39;
+  const gap = 10;
 
   const handleScroll = (event: any) => {
     const contentOffset = event.nativeEvent.contentOffset.x;
@@ -22,6 +23,10 @@ export default function HorizonSlider({
 
   return (
     <View className="slide-view-wrapper">
+      {/* scrollEventThrottle 값을 16밀리초 이하로 설정하면 대부분의 최신
+      디스플레이의 재생 빈도에 가깝기 때문에 조절 기능이 효과적으로
+      비활성화됩니다. 성능 : 제한은 이벤트 핸들러 실행 빈도를 줄이는데, 이는
+      비용 절감이 됩니다. */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -39,9 +44,8 @@ export default function HorizonSlider({
               style={{
                 width: slideWidth,
                 height: slideWidth * 2,
-                borderRadius: 10,
               }}
-              className="bg-gray-800 items-center justify-center"
+              className="bg-gray-800 items-center justify-center rounded-xl"
             >
               <Text className="text-white text-xl">슬라이드 {num}</Text>
             </View>

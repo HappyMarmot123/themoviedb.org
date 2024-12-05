@@ -31,7 +31,7 @@ export default function HorizonSliderPaging({
           <View
             key={num}
             style={{ width: width - 40 }}
-            className={`h-[30vh] bg-gray-${
+            className={` h-[30vh] bg-gray-${
               800 - index * 100
             } items-center justify-center`}
           >
