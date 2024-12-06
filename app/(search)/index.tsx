@@ -9,11 +9,22 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { movieService } from "@/hooks/api/movie";
 export default function SearchScreen() {
   const { height, width } = useWindowDimensions();
 
   const [searchData, setSearchData] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        const response = await movieService.search("batman");
+        console.log(response);
+      } catch (error) {}
+    };
+    fetchMovies();
+  }, []);
 
   return (
     <SafeAreaView className="bg-black min-h-screen">
