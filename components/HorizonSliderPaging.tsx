@@ -30,8 +30,8 @@ export default function HorizonSliderPaging({
         {[1, 2, 3].map((num, index) => (
           <View
             key={num}
-            style={{ width: width - 40 }}
-            className={` h-[30vh] bg-gray-${
+            style={{ width: width - 40, height: (height - 40) / 3 }}
+            className={`bg-gray-${
               800 - index * 100
             } items-center justify-center`}
           >
@@ -43,8 +43,8 @@ export default function HorizonSliderPaging({
         style={{ width: width - 40 }}
         className="absolute left-0 bottom-0 flex-col items-center bg-[#00000057] space-x-2"
       >
-        <Text className="text-white font-bold text-2xl">asdfsadfsadf</Text>
-        <Text className="text-green-700">asdfsadfsadf</Text>
+        <Text className="text-white font-bold text-xl">asdfsadfsadf</Text>
+        <Text className="text-green-700 text-sm">asdfsadfsadf</Text>
         <View className="flex-row justify-center gap-2 py-2">
           {[0, 1, 2].map((index) => (
             <View

@@ -1,8 +1,8 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 
 interface SearchContextType {
-  cart: number;
-  addToCart: (item: number) => void;
+  search: string;
+  addToSearch: (item: string) => void;
 }
 
 // Context 생성
@@ -10,14 +10,14 @@ const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
 // SearchProvider 정의 및 Provider 제공
 export const SearchProvider = ({ children }: { children: ReactNode }) => {
-  const [cart, setCart] = useState<any>(0);
+  const [search, setSearch] = useState("");
 
-  const addToCart = (item: number) => {
-    setCart((prev: any) => prev + item);
+  const addToSearch = (item: string) => {
+    setSearch(item);
   };
 
   return (
-    <SearchContext.Provider value={{ cart, addToCart }}>
+    <SearchContext.Provider value={{ search, addToSearch }}>
       {children}
     </SearchContext.Provider>
   );

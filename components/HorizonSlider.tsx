@@ -43,7 +43,7 @@ export default function HorizonSlider({
             <View
               style={{
                 width: slideWidth,
-                height: slideWidth * 2,
+                height: height / 4,
               }}
               className="bg-gray-800 items-center justify-center rounded-xl"
             >
