@@ -1,19 +1,41 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
-import Animated, { useSharedValue, withSpring } from "react-native-reanimated";
+import { IconProps } from "@expo/vector-icons/build/createIconSet";
 
 // TODO: 엑스포 탭은 app에 존재하는 모든 경로의 index 파일을 자동 라우팅 해줍니다.
 // 따라서 자동 라우팅이 필요 없는 경우에는 Tab선언 후 href 값을 nul로 설정해주세요.
 // TODO: expo-router의 Tabs는 기본적으로 각 탭 화면을 메모리에 유지하는 특성이 있습니다.
 export default function BottomNavigate() {
-  const scale = useSharedValue(1);
+  const IconComponent = ({
+    name,
+    color,
+    size,
+  }: {
+    name: keyof typeof Ionicons.glyphMap;
+    color: string;
+    size: number;
+  }) => {
+    return (
+      <TouchableOpacity activeOpacity={0.5}>
+        <Ionicons name={name} size={size} color={color} />
+      </TouchableOpacity>
+    );
+  };
 
-  const handlePress = () => {
-    scale.value = withSpring(1.5, {}, () => {
-      scale.value = withSpring(1);
-    });
+  const LabelComponent = ({
+    text,
+    focused,
+  }: {
+    text: string;
+    focused: boolean;
+  }) => {
+    return (
+      <>
+        {focused ? <Text className="text-white text-base">{text}</Text> : <></>}
+      </>
+    );
   };
 
   return (
@@ -37,23 +59,10 @@ export default function BottomNavigate() {
         options={{
           title: "홈",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
+            <IconComponent name="home" color={color} size={size} />
           ),
           tabBarLabel: ({ focused }) => {
-            if (focused) {
-              handlePress();
-              return (
-                <Animated.Text
-                  className="text-white text-base"
-                  style={{
-                    transform: [{ scale: scale }],
-                  }}
-                >
-                  홈
-                </Animated.Text>
-              );
-            }
-            return null;
+            return <LabelComponent text={"홈"} focused={focused} />;
           },
         }}
       />
@@ -61,24 +70,11 @@ export default function BottomNavigate() {
         name="(search)/index"
         options={{
           title: "검색",
-          tabBarIcon: ({ color, size, focused }) => {
-            return <Ionicons name="search" size={size} color={color} />;
+          tabBarIcon: ({ color, size }) => {
+            return <IconComponent name="search" color={color} size={size} />;
           },
           tabBarLabel: ({ focused }) => {
-            if (focused) {
-              handlePress();
-              return (
-                <Animated.Text
-                  className="text-white text-base"
-                  style={{
-                    transform: [{ scale: scale }],
-                  }}
-                >
-                  검색
-                </Animated.Text>
-              );
-            }
-            return null;
+            return <LabelComponent text={"검색"} focused={focused} />;
           },
         }}
       />
@@ -87,23 +83,10 @@ export default function BottomNavigate() {
         options={{
           title: "프로필",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
+            <IconComponent name="person" color={color} size={size} />
           ),
           tabBarLabel: ({ focused }) => {
-            if (focused) {
-              handlePress();
-              return (
-                <Animated.Text
-                  className="text-white text-base"
-                  style={{
-                    transform: [{ scale: scale }],
-                  }}
-                >
-                  프로필
-                </Animated.Text>
-              );
-            }
-            return null;
+            return <LabelComponent text={"프로필"} focused={focused} />;
           },
         }}
       />
