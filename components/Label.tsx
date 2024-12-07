@@ -43,8 +43,6 @@ export default function Label({
       </View>
     );
   };
-  //TODO: https://www.npmjs.com/package/react-native-radio-buttons-group
-  //TODO:https://www.npmjs.com/package/@react-native-async-storage/async-storage
   return (
     <>
       <Pressable
