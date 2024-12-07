@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { View, ScrollView, Text } from "react-native";
 
 export default function HorizonSliderPaging({
@@ -9,6 +9,7 @@ export default function HorizonSliderPaging({
   width: number;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const scrollViewRef = useRef<ScrollView>(null);
 
   // 스크롤 이벤트 핸들러
   const handleScroll = (event: any) => {
@@ -17,9 +18,24 @@ export default function HorizonSliderPaging({
     setCurrentIndex(slideIndex);
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const nextIndex = (currentIndex + 1) % 3;
+      setCurrentIndex(nextIndex);
+
+      scrollViewRef.current?.scrollTo({
+        x: (width - 40) * nextIndex,
+        animated: true,
+      });
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [currentIndex, width]);
+
   return (
     <View className="slide-view-wrapper">
       <ScrollView
+        ref={scrollViewRef}
         className=" bg-slate-100"
         horizontal
         pagingEnabled

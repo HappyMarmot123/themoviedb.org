@@ -27,6 +27,7 @@ export default function SearchHeader({ text }: { text: string }) {
               placeholder="Search"
               underlineColorAndroid="transparent"
               placeholderTextColor="#fdba74"
+              onSubmitEditing={handleOnPress}
               // cursorColor="#fdba74"
               // selectionColor="#fdba74"
             />

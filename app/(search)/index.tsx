@@ -62,10 +62,9 @@ export function DataList() {
       {searchData.length > 0 ? (
         <>
           <View className="flex-row gap-4 flex-wrap justify-between">
-            {searchData.map((data, index) => (
-              <View className="flex-col gap-1">
+            {searchData.map((data) => (
+              <View key={data.id} className="flex-col gap-1">
                 <View
-                  key={index}
                   className="bg-gray-300 rounded-lg overflow-hidden"
                   style={{ width: (width - 56) / 2, height: height / 3.5 }}
                 >
