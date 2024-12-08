@@ -1,3 +1,6 @@
+import { searchType } from "./movie";
+
 export const ENDPOINTS = {
-  SEARCH: (query: string) => `/search/movie?query=${query}`,
+  SEARCH: (obj: searchType) =>
+    `/search/movie?query=${obj.query}&page=${obj.page}`,
 };

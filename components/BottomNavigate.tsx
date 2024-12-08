@@ -1,12 +1,13 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import { View, Text, TouchableOpacity, Animated } from "react-native";
+import React, { useEffect, useRef } from "react";
 import { IconProps } from "@expo/vector-icons/build/createIconSet";
 
 // TODO: 엑스포 탭은 app에 존재하는 모든 경로의 index 파일을 자동 라우팅 해줍니다.
 // 따라서 자동 라우팅이 필요 없는 경우에는 Tab선언 후 href 값을 nul로 설정해주세요.
-// TODO: expo-router의 Tabs는 기본적으로 각 탭 화면을 메모리에 유지하는 특성이 있습니다.
+// expo-router의 Tabs는 기본적으로 각 탭 화면을 메모리에 유지하는 특성이 있습니다.
+
 export default function BottomNavigate() {
   const IconComponent = ({
     name,
@@ -17,11 +18,7 @@ export default function BottomNavigate() {
     color: string;
     size: number;
   }) => {
-    return (
-      <TouchableOpacity activeOpacity={0.5}>
-        <Ionicons name={name} size={size} color={color} />
-      </TouchableOpacity>
-    );
+    return <Ionicons name={name} size={size} color={color} />;
   };
 
   const LabelComponent = ({
@@ -31,9 +28,66 @@ export default function BottomNavigate() {
     text: string;
     focused: boolean;
   }) => {
+    const scaleAnim = useRef(new Animated.Value(1)).current;
+    const bgOpacityAnim = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+      if (focused) {
+        Animated.parallel([
+          // 스케일 애니메이션
+          Animated.sequence([
+            Animated.spring(scaleAnim, {
+              toValue: 1.2,
+              useNativeDriver: true,
+              speed: 20,
+              bounciness: 12,
+            }),
+            Animated.spring(scaleAnim, {
+              toValue: 1,
+              useNativeDriver: true,
+              speed: 20,
+            }),
+          ]),
+          // 배경 애니메이션
+          Animated.sequence([
+            Animated.timing(bgOpacityAnim, {
+              toValue: 1,
+              duration: 200,
+              useNativeDriver: true,
+            }),
+            Animated.delay(500),
+            Animated.timing(bgOpacityAnim, {
+              toValue: 0,
+              duration: 200,
+              useNativeDriver: true,
+            }),
+          ]),
+        ]).start();
+      }
+    }, [focused]);
+
     return (
       <>
-        {focused ? <Text className="text-white text-base">{text}</Text> : <></>}
+        {focused ? (
+          <View>
+            <Animated.View
+              style={{
+                position: "absolute",
+                backgroundColor: "rgba(255,255,255,0.2)",
+                borderRadius: 15,
+                padding: 12,
+                left: -30,
+                right: -30,
+                opacity: bgOpacityAnim,
+              }}
+            />
+            <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+              <Text className="text-white text-base">{text}</Text>
+            </Animated.View>
+          </View>
+        ) : (
+          <></>
+        )}
       </>
     );
   };
@@ -46,7 +100,7 @@ export default function BottomNavigate() {
         tabBarInactiveTintColor: "darkgreen",
         tabBarStyle: {
           backgroundColor: "black",
-          height: 60,
+          height: 70,
           paddingTop: 5,
         },
         tabBarLabelStyle: {

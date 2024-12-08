@@ -23,10 +23,6 @@ export default function HorizonSlider({
 
   return (
     <View className="slide-view-wrapper">
-      {/* scrollEventThrottle 값을 16밀리초 이하로 설정하면 대부분의 최신
-      디스플레이의 재생 빈도에 가깝기 때문에 조절 기능이 효과적으로
-      비활성화됩니다. 성능 : 제한은 이벤트 핸들러 실행 빈도를 줄이는데, 이는
-      비용 절감이 됩니다. */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
