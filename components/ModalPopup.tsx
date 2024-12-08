@@ -1,10 +1,11 @@
+import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Pressable } from "react-native";
 import { Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-export const ModalPopup = ({
+const ModalPopup = ({
   children,
   modalVisible,
   setModalVisible,
@@ -43,6 +44,8 @@ export const ModalPopup = ({
     </>
   );
 };
+
+export default React.memo(ModalPopup);
 
 const styles = StyleSheet.create({
   centeredView: {

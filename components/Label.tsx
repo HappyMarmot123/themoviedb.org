@@ -1,17 +1,9 @@
 import { useSearchContext } from "@/providers/SearchProvider";
 import AntDesign from "@expo/vector-icons/build/AntDesign";
-import { useMemo, useState } from "react";
-import {
-  View,
-  Text,
-  Pressable,
-  Modal,
-  StyleSheet,
-  SafeAreaView,
-} from "react-native";
+import { useCallback, useMemo, useState } from "react";
+import { View, Text, Pressable } from "react-native";
 import RadioGroup from "react-native-radio-buttons-group";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { ModalPopup } from "./ModalPopup";
+import ModalPopup from "./ModalPopup";
 
 export default function Label({
   title,
@@ -58,25 +50,23 @@ export default function Label({
     }, 500);
   };
 
-  const ModalComponent = () => {
+  const RadioGroupComponent = useCallback(() => {
     return (
-      <ModalPopup modalVisible={modalVisible} setModalVisible={setModalVisible}>
-        <RadioGroup
-          containerStyle={{ alignItems: "flex-start", gap: 10 }}
-          labelStyle={{
-            fontSize: 16,
-          }}
-          radioButtons={radioButtons.map((button) => ({
-            ...button,
-            color: "darkgreen",
-            borderColor: "darkgreen",
-          }))}
-          onPress={HandleOnPressFilter}
-          selectedId={selectedId}
-        />
-      </ModalPopup>
+      <RadioGroup
+        containerStyle={{ alignItems: "flex-start", gap: 10 }}
+        labelStyle={{
+          fontSize: 16,
+        }}
+        radioButtons={radioButtons.map((button) => ({
+          ...button,
+          color: "darkgreen",
+          borderColor: "darkgreen",
+        }))}
+        onPress={HandleOnPressFilter}
+        selectedId={selectedId}
+      />
     );
-  };
+  }, [radioButtons, selectedId]);
 
   return (
     <>
@@ -93,7 +83,9 @@ export default function Label({
         </Pressable>
       </View>
       {children}
-      <ModalComponent />
+      <ModalPopup modalVisible={modalVisible} setModalVisible={setModalVisible}>
+        <RadioGroupComponent />
+      </ModalPopup>
     </>
   );
 }
