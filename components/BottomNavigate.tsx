@@ -1,8 +1,7 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { View, Text, TouchableOpacity, Animated } from "react-native";
+import { View, Text, Animated } from "react-native";
 import React, { useEffect, useRef } from "react";
-import { IconProps } from "@expo/vector-icons/build/createIconSet";
 
 // TODO: 엑스포 탭은 app에 존재하는 모든 경로의 index 파일을 자동 라우팅 해줍니다.
 // 따라서 자동 라우팅이 필요 없는 경우에는 Tab선언 후 href 값을 nul로 설정해주세요.

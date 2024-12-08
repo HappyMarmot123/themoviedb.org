@@ -6,13 +6,12 @@ import {
   Text,
   Pressable,
   Modal,
-  Alert,
   StyleSheet,
   SafeAreaView,
-  FlatList,
 } from "react-native";
 import RadioGroup from "react-native-radio-buttons-group";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { ModalPopup } from "./ModalPopup";
 
 export default function Label({
   title,
@@ -23,8 +22,6 @@ export default function Label({
   buttonText: string;
   children: React.ReactNode;
 }) {
-  const [modalVisible, setModalVisible] = useState(false);
-
   const radioButtons = useMemo(
     () => [
       {
@@ -47,17 +44,38 @@ export default function Label({
   );
 
   const { addToSearch } = useSearchContext();
+  const [modalVisible, setModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState("1");
 
   const HandleOnPressFilter = (id: string) => {
-    setSelectedId(id);
     const value = radioButtons.find((button) => button.id === id)
       ?.value as string;
+    setSelectedId(id);
     addToSearch(value);
 
     setTimeout(() => {
       setModalVisible(false);
     }, 500);
+  };
+
+  const ModalComponent = () => {
+    return (
+      <ModalPopup modalVisible={modalVisible} setModalVisible={setModalVisible}>
+        <RadioGroup
+          containerStyle={{ alignItems: "flex-start", gap: 10 }}
+          labelStyle={{
+            fontSize: 16,
+          }}
+          radioButtons={radioButtons.map((button) => ({
+            ...button,
+            color: "darkgreen",
+            borderColor: "darkgreen",
+          }))}
+          onPress={HandleOnPressFilter}
+          selectedId={selectedId}
+        />
+      </ModalPopup>
+    );
   };
 
   return (
@@ -74,61 +92,8 @@ export default function Label({
           <AntDesign name="right" size={15} color="#15803d" />
         </Pressable>
       </View>
-      {children && children}
-      {/* TODO: 모달팝업 */}
-      <SafeAreaProvider>
-        <SafeAreaView style={styles.centeredView}>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <Pressable
-              onPress={(e) => {
-                if (e.target === e.currentTarget) {
-                  setModalVisible(!modalVisible);
-                }
-              }}
-              className="relative flex-1 bg-black/50 items-center justify-center"
-            >
-              {/* <View className="h-16 flex-row items-center">
-        <Text className="text-xl">{item.label}</Text>
-      </View> */}
-
-              <View className="text-left bg-white rounded-lg p-5">
-                <RadioGroup
-                  containerStyle={{ alignItems: "flex-start", gap: 10 }}
-                  labelStyle={{
-                    fontSize: 16,
-                  }}
-                  radioButtons={radioButtons.map((button) => ({
-                    ...button,
-                    color: "darkgreen",
-                    borderColor: "darkgreen",
-                  }))}
-                  onPress={HandleOnPressFilter}
-                  selectedId={selectedId}
-                />
-              </View>
-            </Pressable>
-          </Modal>
-        </SafeAreaView>
-      </SafeAreaProvider>
+      {children}
+      <ModalComponent />
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-  },
-});

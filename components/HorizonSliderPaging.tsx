@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { View, ScrollView, Text } from "react-native";
+import { View, ScrollView, Text, Image } from "react-native";
 
 export default function HorizonSliderPaging({
   height,
@@ -43,7 +43,7 @@ export default function HorizonSliderPaging({
         onScroll={handleScroll}
         scrollEventThrottle={16}
       >
-        {[1, 2, 3].map((num, index) => (
+        {[0, 1, 2].map((num, index) => (
           <View
             key={num}
             style={{ width: width - 40, height: (height - 40) / 3 }}
@@ -51,7 +51,10 @@ export default function HorizonSliderPaging({
               800 - index * 100
             } items-center justify-center`}
           >
-            <Text className="text-white text-xl">슬라이드 {num}</Text>
+            <Image
+              source={require("../assets/images/marmotcon.png")}
+              className="w-full h-full"
+            />
           </View>
         ))}
       </ScrollView>
@@ -59,8 +62,8 @@ export default function HorizonSliderPaging({
         style={{ width: width - 40 }}
         className="absolute left-0 bottom-0 flex-col items-center bg-[#00000057] space-x-2"
       >
-        <Text className="text-white font-bold text-xl">asdfsadfsadf</Text>
-        <Text className="text-green-700 text-sm">asdfsadfsadf</Text>
+        <Text className="text-white font-bold text-xl">themoviedb.org</Text>
+        <Text className="text-green-700 text-sm">HappyMarmot123</Text>
         <View className="flex-row justify-center gap-2 py-2">
           {[0, 1, 2].map((index) => (
             <View

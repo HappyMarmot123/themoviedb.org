@@ -15,7 +15,11 @@ export default function HorizonSlider({
 }) {
   const { search } = useSearchContext();
   const dispatch = useAppDispatch();
-  const defaultKeyword = "popular";
+  const defaultKeyword = useMemo(() => "popular", []);
+
+  const [_, setCurrentIndex] = useState(0);
+  const slideWidth = (width - 40) / 3.39;
+  const maxLength = useMemo(() => 12, []);
 
   const { movies, loading, error } = useAppSelector(
     (state: any) => state.movie
@@ -26,23 +30,38 @@ export default function HorizonSlider({
     dispatch(fetchMovies({ keyword, page: "1" }));
   }, [search]);
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  // 각 슬라이드의 너비 계산
-  //4번째 슬라이드가 살짝 보이게 함
-  const slideWidth = (width - 40) / 3.39;
-  const gap = 10;
-  const maxLength = useMemo(() => 12, []);
   const truncatedString = (data: string) =>
     data.length > maxLength ? data.substring(0, maxLength) + "..." : data;
+
   const truncateDecimal = (value: string): number => {
     return Math.floor(Number(value));
   };
 
   const handleScroll = (event: any) => {
     const contentOffset = event.nativeEvent.contentOffset.x;
-    const slideIndex = Math.round(contentOffset / (slideWidth + gap));
+    const slideIndex = Math.round(contentOffset / (slideWidth + 10));
     setCurrentIndex(slideIndex);
+  };
+
+  const sliderItems = (movie: any) => {
+    return (
+      <View key={movie.id} className="flex-col" style={{ gap: 3 }}>
+        <Image
+          src={`${IMAGE_URL}${movie.poster_path}`}
+          className="bg-gray-800 items-center justify-center rounded-xl"
+          style={{
+            width: slideWidth,
+            height: height / 4,
+          }}
+        />
+        <Text className="text-white font-bold text-base">
+          {truncatedString(movie.name)}
+        </Text>
+        <Text className="text-green-700 text-sm">
+          popularity {truncateDecimal(movie.popularity)}
+        </Text>
+      </View>
+    );
   };
 
   return (
@@ -54,28 +73,9 @@ export default function HorizonSlider({
         scrollEventThrottle={16}
         decelerationRate="normal"
         snapToAlignment="start"
-        contentContainerStyle={{
-          gap,
-        }}
+        contentContainerStyle={{ gap: 10 }}
       >
-        {movies.map((movie: any) => (
-          <View key={movie.id} className="flex-col" style={{ gap: 3 }}>
-            <Image
-              src={`${IMAGE_URL}${movie.poster_path}`}
-              style={{
-                width: slideWidth,
-                height: height / 4,
-              }}
-              className="bg-gray-800 items-center justify-center rounded-xl"
-            />
-            <Text className="text-white font-bold text-base">
-              {truncatedString(movie.name)}
-            </Text>
-            <Text className="text-green-700 text-sm">
-              popularity {truncateDecimal(movie.popularity)}
-            </Text>
-          </View>
-        ))}
+        {movies.map((movie: any) => sliderItems(movie))}
       </ScrollView>
     </View>
   );

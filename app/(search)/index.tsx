@@ -8,17 +8,9 @@ import {
   StyleSheet,
   ScrollView,
   Image,
-  ScrollViewComponent,
   Alert,
 } from "react-native";
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { movieService } from "@/hooks/api/movie";
 import { SearchProvider, useSearchContext } from "@/providers/SearchProvider";
 import { IMAGE_URL } from "@/constants/Moviedb";
@@ -29,7 +21,6 @@ import { IMAGE_URL } from "@/constants/Moviedb";
 
 {
   /* 
-  TODO:
   SearchProvider: 감싸진 컴포넌트만 useContext를 사용할 수 있습니다.
   scrollEventThrottle: 값을 16밀리초 이하로 설정하면 대부분의 최신
   디스플레이의 재생 빈도에 가깝기 때문에 조절 기능이 효과적으로
@@ -106,37 +97,32 @@ const SearchView = () => {
     return (
       <>
         {searchData.length > 0 && (
-          <>
-            <View className="flex-row gap-4 flex-wrap justify-between">
-              {searchData.map((data) => (
+          <View className="flex-row gap-4 flex-wrap justify-between">
+            {searchData.map((data) => (
+              <View key={`${data.title}-${data.id}`} className="flex-col gap-1">
                 <View
-                  key={`${data.title}-${data.id}`}
-                  className="flex-col gap-1"
+                  className="bg-gray-300 rounded-lg overflow-hidden"
+                  style={{ width: (width - 56) / 2, height: height / 3.5 }}
                 >
-                  <View
-                    className="bg-gray-300 rounded-lg overflow-hidden"
-                    style={{ width: (width - 56) / 2, height: height / 3.5 }}
-                  >
-                    <Image
-                      src={`${IMAGE_URL}/${data?.poster_path}`}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                      alt={data?.title}
-                    />
-                  </View>
-                  <Text className="text-white font-bold text-xl">
-                    {truncatedString(data?.title)}
-                  </Text>
-                  <Text className="text-green-700 text-sm">
-                    Popularity {data?.popularity}
-                  </Text>
+                  <Image
+                    src={`${IMAGE_URL}/${data?.poster_path}`}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                    alt={data?.title}
+                  />
                 </View>
-              ))}
-            </View>
-          </>
+                <Text className="text-white font-bold text-xl">
+                  {truncatedString(data?.title)}
+                </Text>
+                <Text className="text-green-700 text-sm">
+                  Popularity {data?.popularity}
+                </Text>
+              </View>
+            ))}
+          </View>
         )}
         {searchData.length <= 0 && (
           <>
