@@ -1,19 +1,13 @@
 import Label from "@/components/Label";
 import HorizonSliderPaging from "@/components/HorizonSliderPaging";
-import {
-  StyleSheet,
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-  Modal,
-  Pressable,
-  Alert,
-} from "react-native";
+import { StyleSheet, SafeAreaView, ScrollView, Alert } from "react-native";
 import { useWindowDimensions } from "react-native";
 import HorizonSlider from "@/components/HorizonSlider";
 import Header from "@/components/Header";
-import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
+import { movieService } from "@/hooks/api/movie";
+import { SearchProvider } from "@/providers/SearchProvider";
 
 const HomeScreen = () => {
   // 라우저 창의 현재 크기(너비와 높이)를 추적하는 React 훅이다.
@@ -22,15 +16,17 @@ const HomeScreen = () => {
   const { height, width } = useWindowDimensions();
 
   return (
-    <SafeAreaView style={[styles.container]}>
-      <Header text="Movies" />
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <HorizonSliderPaging height={height} width={width} />
-        <Label title="See All Movies" buttonText="Filter">
-          <HorizonSlider height={height} width={width} />
-        </Label>
-      </ScrollView>
-    </SafeAreaView>
+    <SearchProvider>
+      <SafeAreaView style={[styles.container]}>
+        <Header text="Movies" />
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <HorizonSliderPaging height={height} width={width} />
+          <Label title="See All Movies" buttonText="Filter">
+            <HorizonSlider height={height} width={width} />
+          </Label>
+        </ScrollView>
+      </SafeAreaView>
+    </SearchProvider>
   );
 };
 

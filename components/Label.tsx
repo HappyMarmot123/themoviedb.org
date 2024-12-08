@@ -1,5 +1,6 @@
+import { useSearchContext } from "@/providers/SearchProvider";
 import AntDesign from "@expo/vector-icons/build/AntDesign";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -10,6 +11,7 @@ import {
   SafeAreaView,
   FlatList,
 } from "react-native";
+import RadioGroup from "react-native-radio-buttons-group";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function Label({
@@ -23,43 +25,56 @@ export default function Label({
 }) {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const data = [
-    { id: "1", label: "Option 1" },
-    { id: "2", label: "Option 2" },
-    { id: "3", label: "Option 3" },
-    { id: "4", label: "Option 4" },
-    { id: "5", label: "Option 5" },
-    { id: "6", label: "Option 6" },
-  ];
+  const radioButtons = useMemo(
+    () => [
+      {
+        id: "1",
+        label: "인기순",
+        value: "popular",
+      },
+      {
+        id: "2",
+        label: "평점순",
+        value: "top_rated",
+      },
+      // {
+      //   id: "3",
+      //   label: "신규순",
+      //   value: "upcoming",
+      // },
+    ],
+    []
+  );
 
-  // 선택된 라디오 버튼 상태
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const { addToSearch } = useSearchContext();
+  const [selectedId, setSelectedId] = useState("1");
 
-  // 항목 렌더링 함수
-  const renderItem = ({ item }: { item: { id: string; label: string } }) => {
-    return (
-      <View style={styles.itemContainer}>
-        <Text style={styles.itemLabel}>{item.label}</Text>
-      </View>
-    );
+  const HandleOnPressFilter = (id: string) => {
+    setSelectedId(id);
+    const value = radioButtons.find((button) => button.id === id)
+      ?.value as string;
+    addToSearch(value);
+
+    setTimeout(() => {
+      setModalVisible(false);
+    }, 500);
   };
+
   return (
     <>
-      <Pressable
-        className="flex-col gap-5"
-        onPress={() => setModalVisible(!modalVisible)}
-      >
-        <View className="flex-row items-center justify-between">
-          <View>
-            <Text className="text-orange-300 text-2xl font-bold">{title}</Text>
-          </View>
-          <View className="flex-row items-baseline gap-1">
-            <Text className="text-green-700 text-xl">{buttonText}</Text>
-            <AntDesign name="right" size={15} color="#15803d" />
-          </View>
+      <View className="flex-row items-center justify-between">
+        <View>
+          <Text className="text-orange-300 text-2xl font-bold">{title}</Text>
         </View>
-        {children && children}
-      </Pressable>
+        <Pressable
+          className="flex-row items-baseline gap-1"
+          onPress={() => setModalVisible(!modalVisible)}
+        >
+          <Text className="text-green-700 text-xl">{buttonText}</Text>
+          <AntDesign name="right" size={15} color="#15803d" />
+        </Pressable>
+      </View>
+      {children && children}
       {/* TODO: 모달팝업 */}
       <SafeAreaProvider>
         <SafeAreaView style={styles.centeredView}>
@@ -68,36 +83,37 @@ export default function Label({
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
-              Alert.alert("Modal has been closed.");
               setModalVisible(!modalVisible);
             }}
           >
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "rgba(0, 0, 0, 0.5)", // 반투명 검은색 배경
+            <Pressable
+              onPress={(e) => {
+                if (e.target === e.currentTarget) {
+                  setModalVisible(!modalVisible);
+                }
               }}
+              className="relative flex-1 bg-black/50 items-center justify-center"
             >
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <FlatList
-                    data={data}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item.id}
-                    numColumns={2} // 두 열로 항목을 나열
-                    columnWrapperStyle={styles.columnWrapper} // 열 사이 간격을 조정
-                  />
-                  <Pressable
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={() => setModalVisible(!modalVisible)}
-                  >
-                    <Text style={styles.textStyle}>Hide Modal</Text>
-                  </Pressable>
-                </View>
+              {/* <View className="h-16 flex-row items-center">
+        <Text className="text-xl">{item.label}</Text>
+      </View> */}
+
+              <View className="text-left bg-white rounded-lg p-5">
+                <RadioGroup
+                  containerStyle={{ alignItems: "flex-start", gap: 10 }}
+                  labelStyle={{
+                    fontSize: 16,
+                  }}
+                  radioButtons={radioButtons.map((button) => ({
+                    ...button,
+                    color: "darkgreen",
+                    borderColor: "darkgreen",
+                  }))}
+                  onPress={HandleOnPressFilter}
+                  selectedId={selectedId}
+                />
               </View>
-            </View>
+            </Pressable>
           </Modal>
         </SafeAreaView>
       </SafeAreaProvider>
@@ -111,53 +127,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
   modalText: {
     marginBottom: 15,
     textAlign: "center",
-  },
-  columnWrapper: {
-    justifyContent: "space-between", // 열 간격 설정
-    marginBottom: 10,
-  },
-  itemContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10,
-    width: "45%", // 두 열에 맞게 항목의 너비 설정
-  },
-  itemLabel: {
-    marginLeft: 10,
-    fontSize: 16,
   },
 });
