@@ -4,8 +4,18 @@ import { useAppDispatch } from "@/hooks/useRedux";
 import { truncateDecimal, truncatedString } from "@/hooks/useUtility";
 import { useSearchContext } from "@/providers/SearchProvider";
 import { fetchMovies } from "@/redux/movieSlice";
+import { Router, useNavigation, useRouter } from "expo-router";
 import { useState, useEffect, useMemo } from "react";
-import { View, ScrollView, Text, Image } from "react-native";
+import {
+  View,
+  ScrollView,
+  Text,
+  Image,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+  Pressable,
+} from "react-native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 /*
   TODO: react-redux
@@ -15,6 +25,13 @@ import { View, ScrollView, Text, Image } from "react-native";
 
 const DEFAULT_KEYWORD = "popular";
 const MAX_LENGTH = 12;
+
+interface movieType {
+  id: number;
+  poster_path: string;
+  name: string;
+  popularity: string;
+}
 
 export default function HorizonSlider({
   height,
@@ -36,14 +53,24 @@ export default function HorizonSlider({
     dispatch(fetchMovies({ keyword, page: "1" }));
   }, [search]);
 
-  const handleScroll = (event: any) => {
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const contentOffset = event.nativeEvent.contentOffset.x;
     const slideIndex = Math.round(contentOffset / (slideWidth + 10));
   };
 
-  const sliderItems = (movie: any) => {
+  const router = useRouter();
+
+  const sliderItems = (movie: movieType) => {
     return (
-      <View key={movie.id} className="flex-col" style={{ gap: 3 }}>
+      <Pressable
+        key={movie.id}
+        className="flex-col gap-3"
+        onPress={() =>
+          router.push({
+            pathname: "/(detail)",
+          })
+        }
+      >
         <Image
           src={`${IMAGE_URL}${movie.poster_path}`}
           className="bg-gray-800 items-center justify-center rounded-xl"
@@ -58,7 +85,7 @@ export default function HorizonSlider({
         <Text className="text-green-700 text-sm">
           popularity {truncateDecimal(movie.popularity)}
         </Text>
-      </View>
+      </Pressable>
     );
   };
 

@@ -144,9 +144,11 @@ export default function BottomNavigate() {
         }}
       />
       <Tabs.Screen
-        name="(_detail)/_index"
+        name="(detail)/index"
         options={{
-          href: null,
+          title: "상세",
+          href: null, // 해당 경로를 탭에서 제외
+          // tabBarStyle: { display: 'none' }, // 조건에 따른 숨기기
         }}
       />
     </Tabs>
