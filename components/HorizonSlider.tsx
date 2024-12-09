@@ -67,7 +67,9 @@ export default function HorizonSlider({
       <View key={movie.id} className="flex-col gap-3">
         <Pressable onPress={() => detailRoute(movie)}>
           <Image
-            src={`${IMAGE_URL_W130}${movie.poster_path}`}
+            source={{
+              uri: `${IMAGE_URL_W130}${movie.poster_path}`,
+            }}
             className="bg-gray-800 items-center justify-center rounded-xl"
             style={{
               width: slideWidth,

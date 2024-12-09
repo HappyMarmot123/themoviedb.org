@@ -11,13 +11,15 @@ import {
   StyleSheet,
   useWindowDimensions,
   Image,
-  ImageBackground,
-  Platform,
 } from "react-native";
 import { AxiosResponse } from "axios";
 import Header from "@/components/Header";
-import { IMAGE_URL_W1920 } from "@/constants/Moviedb";
+import { IMAGE_URL_W1920, IMAGE_URL_W300 } from "@/constants/Moviedb";
 import { LinearGradient } from "expo-linear-gradient";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import FontAwesome from "@expo/vector-icons/build/FontAwesome";
+import Label from "@/components/Label";
+import { objType } from "@/assets/type/type";
 
 /* 
   TODO:
@@ -30,9 +32,7 @@ export default function DetailScreen() {
   const { height, width } = useWindowDimensions();
   const { id } = useLocalSearchParams();
 
-  const [detailData, setDetailData] = useState<{ [key: string]: any } | null>(
-    null
-  );
+  const [detailData, setDetailData] = useState<objType | null>(null);
   const [videoData, setVideoData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -68,11 +68,11 @@ export default function DetailScreen() {
     if (response?.status === "fulfilled" && response?.value?.data) {
       switch (keyName) {
         case "detail":
-          console.log(response.value.data);
           setDetailData(response.value.data);
           break;
         case "video":
           let videos = videoFilter(response.value.data.results);
+          console.log(videos);
           setVideoData(videos);
           break;
       }
@@ -98,6 +98,42 @@ export default function DetailScreen() {
       </View>
     );
   }
+  const createStars = (voteAverage: number) => {
+    const stars = [];
+    const fullStars = Math.floor(voteAverage / 2);
+    const decimal = voteAverage % 2;
+    const halfStar: boolean = decimal >= 0.5 ? true : false;
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(<FontAwesome key={i} name="star" size={20} color="green" />);
+    }
+    if (halfStar) {
+      stars.push(
+        <FontAwesome key="half" name="star-half-o" size={20} color="green" />
+      );
+    }
+    for (let i = 0; i < 5 - fullStars - (halfStar ? 1 : 0); i++) {
+      stars.push(
+        <FontAwesome key={`${i}-none`} name="star-o" size={20} color="green" />
+      );
+    }
+
+    return stars;
+  };
+
+  const YoutubeElement = ({ data: data }: objType) => {
+    return (
+      <>
+        {/* <Text className="text-white text-base">{JSON.stringify(data)}</Text> */}
+        <Image
+          key={data.id}
+          source={{
+            uri: `https://img.youtube.com/vi/${data.key}/maxresdefault.jpg`,
+          }}
+          style={{ width: width / 1.5, height: height / 4, borderRadius: 10 }}
+        />
+      </>
+    );
+  };
 
   return (
     <SafeAreaView style={[styles.container]}>
@@ -108,15 +144,110 @@ export default function DetailScreen() {
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={{ height: height / 4 }}>
               <LinearGradient
-                className="h-[20vw]"
+                className="h-[30vw]"
                 colors={["transparent", "black"]}
                 style={styles.background}
               />
               <Image
-                src={`${IMAGE_URL_W1920}${detailData.backdrop_path}`}
+                source={{
+                  uri: `${IMAGE_URL_W1920}${detailData.backdrop_path}`,
+                }}
                 className="w-full h-full object-contain"
               />
             </View>
+            <View
+              className="mt-[4vw] gap-[4vw] flex flex-row "
+              style={{
+                height: height / 4,
+              }}
+            >
+              <Image
+                source={{ uri: `${IMAGE_URL_W300}${detailData.poster_path}` }}
+                className="flex-[0.4] h-full rounded-md"
+                resizeMode="stretch"
+              />
+              <View className="flex-[0.6] ">
+                <MaterialIcons
+                  name="favorite-border"
+                  size={30}
+                  color="green"
+                  className="text-right mr-[2vw]"
+                />
+                <View className="flex flex-row items-center gap-1">
+                  {createStars(detailData.vote_average)}
+                  <Text className="text-green-700 text-sm ml-1">
+                    ({detailData.vote_count})
+                  </Text>
+                </View>
+                <View className="mb-[2vw]">
+                  <Text className="text-green-700 text-base">
+                    Revenue: ${detailData.revenue.toLocaleString()}
+                  </Text>
+                </View>
+                <View className="flex flex-row items-baseline">
+                  <Text className="text-white text-base">Release Date: </Text>
+                  <Text className="text-white text-base">
+                    {detailData.release_date}
+                  </Text>
+                </View>
+                <View className="flex flex-row items-baseline">
+                  <Text className="text-white text-base">Country: </Text>
+                  <Text className="text-white text-base">
+                    {detailData.origin_country}
+                  </Text>
+                </View>
+                <View className="flex flex-row items-baseline">
+                  <Text className="text-white text-base">Language: </Text>
+                  <Text className="text-white text-base">
+                    {detailData.original_language}
+                  </Text>
+                </View>
+                <ScrollView
+                  horizontal
+                  className="mt-[4vw]"
+                  showsHorizontalScrollIndicator={false}
+                  decelerationRate="normal"
+                  snapToAlignment="start"
+                  contentContainerStyle={{ gap: 10 }}
+                >
+                  {/* <Text className="text-white">{JSON.stringify(detailData.genres)}</Text> */}
+                  {detailData.genres.map((data: any) => (
+                    <View key={data.id}>
+                      <Text className="text-white text-base border border-[#fdba74] rounded-sm px-[2vw] py-[1vw]">
+                        {data.name}
+                      </Text>
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>
+            </View>
+            <View className="px-[2vw] py-[6vw]">
+              <View>
+                <Text className="text-gray-500 text-xl font-bold mb-[2vw]">
+                  {detailData.tagline}
+                </Text>
+                <Text className="text-white text-base">
+                  {detailData.overview}
+                </Text>
+              </View>
+              <View className="flex-row items-center justify-between mt-[6vw]">
+                <View>
+                  <Text className="text-white text-2xl font-bold">Video</Text>
+                </View>
+              </View>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              decelerationRate="normal"
+              snapToAlignment="start"
+              contentContainerStyle={{ gap: 20 }}
+            >
+              {videoData.map((data: any) => (
+                <YoutubeElement data={data} />
+              ))}
+            </ScrollView>
+            <View className="h-[20vw]" />
           </ScrollView>
         </>
       )}

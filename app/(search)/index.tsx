@@ -130,7 +130,9 @@ const SearchView = () => {
                 >
                   <Pressable onPress={() => detailRoute(data.id)}>
                     <Image
-                      src={`${IMAGE_URL_W130}/${data?.poster_path}`}
+                      source={{
+                        uri: `${IMAGE_URL_W130}/${data?.poster_path}`,
+                      }}
                       style={{
                         width: "100%",
                         height: "100%",

@@ -14,3 +14,7 @@ export interface mainType {
   keyword: string;
   page: string;
 }
+
+export interface objType {
+  [key: string]: any;
+}
