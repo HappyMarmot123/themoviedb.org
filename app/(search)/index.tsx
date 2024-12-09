@@ -14,6 +14,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { movieService } from "@/hooks/api/movie";
 import { SearchProvider, useSearchContext } from "@/providers/SearchProvider";
 import { IMAGE_URL } from "@/constants/Moviedb";
+import { truncatedString } from "@/hooks/useUtility";
 
 {
   /* TODO: 같은 제품이 중복으로 검색되는 경우가 있습니다. key prop error는 무시해주세요. */
@@ -28,6 +29,8 @@ import { IMAGE_URL } from "@/constants/Moviedb";
   비용 절감이 됩니다. */
 }
 
+const MAX_LENGTH = 11;
+
 export default function SearchScreen() {
   return (
     <SearchProvider>
@@ -40,7 +43,6 @@ const SearchView = () => {
   const { search } = useSearchContext();
   const { height, width } = useWindowDimensions();
   const scrollViewRef = useRef<ScrollView>(null);
-  const maxLength = useMemo(() => 11, []);
 
   const [searchData, setSearchData] = useState<any[]>([]);
   const [page, setPage] = useState(1);
@@ -90,9 +92,6 @@ const SearchView = () => {
     }
   };
 
-  const truncatedString = (data: string) =>
-    data.length > maxLength ? data.substring(0, maxLength) + "..." : data;
-
   const DataList = () => {
     return (
       <>
@@ -115,7 +114,7 @@ const SearchView = () => {
                   />
                 </View>
                 <Text className="text-white font-bold text-xl">
-                  {truncatedString(data?.title)}
+                  {truncatedString(data?.title, 0, MAX_LENGTH)}
                 </Text>
                 <Text className="text-green-700 text-sm">
                   Popularity {data?.popularity}
