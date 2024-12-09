@@ -1,16 +1,7 @@
 import { tmdbApi } from "./index";
 import { ENDPOINTS } from "./endpoints";
 import { AxiosResponse } from "axios";
-
-export interface searchType {
-  query: string;
-  page: string;
-}
-
-export interface mainType {
-  keyword: string;
-  page: string;
-}
+import { searchType, mainType } from "@/assets/type/type";
 
 export const movieService = {
   search: (obj: searchType): Promise<AxiosResponse> =>

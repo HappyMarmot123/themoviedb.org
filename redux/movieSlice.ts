@@ -1,5 +1,6 @@
+import { mainType } from "@/assets/type/type";
+import { movieService } from "@/hooks/api/movie";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { mainType, movieService } from "@/hooks/api/movie";
 
 export interface MovieState {
   movies: any[];

@@ -16,6 +16,7 @@ import {
   Pressable,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { movieType } from "@/assets/type/type";
 
 /*
   TODO: react-redux
@@ -25,13 +26,6 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 const DEFAULT_KEYWORD = "popular";
 const MAX_LENGTH = 12;
-
-interface movieType {
-  id: number;
-  poster_path: string;
-  name: string;
-  popularity: string;
-}
 
 export default function HorizonSlider({
   height,
@@ -47,6 +41,7 @@ export default function HorizonSlider({
   const { movies, loading, error } = useAppSelector(
     (state: any) => state.movie
   );
+  // console.log(movies);
 
   useEffect(() => {
     const keyword = search || DEFAULT_KEYWORD;
@@ -59,33 +54,35 @@ export default function HorizonSlider({
   };
 
   const router = useRouter();
+  const detailRoute = (movie: movieType) => {
+    router.push({
+      pathname: "/(detail)",
+      params: {
+        id: movie.id,
+      },
+    });
+  };
 
   const sliderItems = (movie: movieType) => {
     return (
-      <Pressable
-        key={movie.id}
-        className="flex-col gap-3"
-        onPress={() =>
-          router.push({
-            pathname: "/(detail)",
-          })
-        }
-      >
-        <Image
-          src={`${IMAGE_URL}${movie.poster_path}`}
-          className="bg-gray-800 items-center justify-center rounded-xl"
-          style={{
-            width: slideWidth,
-            height: height / 4,
-          }}
-        />
+      <View key={movie.id} className="flex-col gap-3">
+        <Pressable onPress={() => detailRoute(movie)}>
+          <Image
+            src={`${IMAGE_URL}${movie.poster_path}`}
+            className="bg-gray-800 items-center justify-center rounded-xl"
+            style={{
+              width: slideWidth,
+              height: height / 4,
+            }}
+          />
+        </Pressable>
         <Text className="text-white font-bold text-base">
-          {truncatedString(movie.name, 0, MAX_LENGTH)}
+          {truncatedString(movie.title, 0, MAX_LENGTH)}
         </Text>
         <Text className="text-green-700 text-sm">
           popularity {truncateDecimal(movie.popularity)}
         </Text>
-      </Pressable>
+      </View>
     );
   };
 
@@ -100,7 +97,7 @@ export default function HorizonSlider({
         snapToAlignment="start"
         contentContainerStyle={{ gap: 10 }}
       >
-        {movies.map((movie: any) => sliderItems(movie))}
+        {movies?.length > 0 && movies?.map((movie: any) => sliderItems(movie))}
       </ScrollView>
     </View>
   );

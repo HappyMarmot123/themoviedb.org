@@ -9,12 +9,15 @@ import {
   ScrollView,
   Image,
   Alert,
+  Pressable,
 } from "react-native";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { movieService } from "@/hooks/api/movie";
 import { SearchProvider, useSearchContext } from "@/providers/SearchProvider";
 import { IMAGE_URL } from "@/constants/Moviedb";
 import { truncatedString } from "@/hooks/useUtility";
+import { useRouter } from "expo-router";
+import LottieView from "lottie-react-native";
 
 {
   /* TODO: 같은 제품이 중복으로 검색되는 경우가 있습니다. key prop error는 무시해주세요. */
@@ -52,7 +55,7 @@ const SearchView = () => {
   useEffect(() => {
     if (search) {
       fetchMovies(1);
-      scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+      scrollViewRef.current?.scrollTo({ y: 0, animated: false });
     }
 
     setSearchData([]);
@@ -85,16 +88,38 @@ const SearchView = () => {
     const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
     const isCloseToBottom =
       layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+    const nextPage = isCloseToBottom && !isLoading && hasMore;
 
-    if (isCloseToBottom && !isLoading && hasMore) {
+    if (nextPage) {
       setPage((prev) => prev + 1);
       fetchMovies(page + 1);
     }
   };
 
+  const router = useRouter();
+  const detailRoute = (id: string) => {
+    router.push({
+      pathname: "/(detail)",
+      params: {
+        id: id,
+      },
+    });
+  };
+
   const DataList = () => {
     return (
       <>
+        {isLoading && (
+          <View className="absolute z-10 w-screen h-screen items-center bg-black/90">
+            <LottieView
+              source={require("@/assets/lottie/Loading.json")}
+              autoPlay
+              loop
+              style={{ width: 200, height: 200 }}
+            />
+            <Text className="text-white text-xl">Loading...</Text>
+          </View>
+        )}
         {searchData.length > 0 && (
           <View className="flex-row gap-4 flex-wrap justify-between">
             {searchData.map((data) => (
@@ -103,15 +128,17 @@ const SearchView = () => {
                   className="bg-gray-300 rounded-lg overflow-hidden"
                   style={{ width: (width - 56) / 2, height: height / 3.5 }}
                 >
-                  <Image
-                    src={`${IMAGE_URL}/${data?.poster_path}`}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                    alt={data?.title}
-                  />
+                  <Pressable onPress={() => detailRoute(data.id)}>
+                    <Image
+                      src={`${IMAGE_URL}/${data?.poster_path}`}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                      alt={data?.title}
+                    />
+                  </Pressable>
                 </View>
                 <Text className="text-white font-bold text-xl">
                   {truncatedString(data?.title, 0, MAX_LENGTH)}

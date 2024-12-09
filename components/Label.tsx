@@ -5,6 +5,24 @@ import { View, Text, Pressable } from "react-native";
 import RadioGroup from "react-native-radio-buttons-group";
 import ModalPopup from "./ModalPopup";
 
+const radioButtons = [
+  {
+    id: "1",
+    label: "인기순",
+    value: "popular",
+  },
+  {
+    id: "2",
+    label: "평점순",
+    value: "top_rated",
+  },
+  {
+    id: "3",
+    label: "신규순",
+    value: "upcoming",
+  },
+];
+
 export default function Label({
   title,
   buttonText,
@@ -14,27 +32,6 @@ export default function Label({
   buttonText: string;
   children: React.ReactNode;
 }) {
-  const radioButtons = useMemo(
-    () => [
-      {
-        id: "1",
-        label: "인기순",
-        value: "popular",
-      },
-      {
-        id: "2",
-        label: "평점순",
-        value: "top_rated",
-      },
-      // {
-      //   id: "3",
-      //   label: "신규순",
-      //   value: "upcoming",
-      // },
-    ],
-    []
-  );
-
   const { addToSearch } = useSearchContext();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedId, setSelectedId] = useState("1");

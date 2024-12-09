@@ -32,7 +32,7 @@ const ModalPopup = ({
                   setModalVisible(!modalVisible);
                 }
               }}
-              className="relative flex-1 bg-black/50 items-center justify-center"
+              className="relative flex-1 bg-black/80 items-center justify-center"
             >
               <View className="text-left bg-white rounded-lg p-5">
                 {children}

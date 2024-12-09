@@ -148,7 +148,7 @@ export default function BottomNavigate() {
         options={{
           title: "상세",
           href: null, // 해당 경로를 탭에서 제외
-          // tabBarStyle: { display: 'none' }, // 조건에 따른 숨기기
+          tabBarStyle: { display: "none" }, // Detail 화면에서는 탭 바 숨기기
         }}
       />
     </Tabs>
