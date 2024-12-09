@@ -1,11 +1,10 @@
-import { IMAGE_URL } from "@/constants/Moviedb";
 import { useAppSelector } from "@/hooks/useRedux";
 import { useAppDispatch } from "@/hooks/useRedux";
 import { truncateDecimal, truncatedString } from "@/hooks/useUtility";
 import { useSearchContext } from "@/providers/SearchProvider";
 import { fetchMovies } from "@/redux/movieSlice";
-import { Router, useNavigation, useRouter } from "expo-router";
-import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import {
   View,
   ScrollView,
@@ -15,8 +14,8 @@ import {
   NativeScrollEvent,
   Pressable,
 } from "react-native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { movieType } from "@/assets/type/type";
+import { IMAGE_URL_W130 } from "@/constants/Moviedb";
 
 /*
   TODO: react-redux
@@ -68,7 +67,7 @@ export default function HorizonSlider({
       <View key={movie.id} className="flex-col gap-3">
         <Pressable onPress={() => detailRoute(movie)}>
           <Image
-            src={`${IMAGE_URL}${movie.poster_path}`}
+            src={`${IMAGE_URL_W130}${movie.poster_path}`}
             className="bg-gray-800 items-center justify-center rounded-xl"
             style={{
               width: slideWidth,
