@@ -41,7 +41,6 @@ export default function HorizonSlider({
   const { movies, loading, error } = useAppSelector(
     (state: any) => state.movie
   );
-  console.log(movies);
 
   useEffect(() => {
     const keyword = search || DEFAULT_KEYWORD;
@@ -75,11 +74,11 @@ export default function HorizonSlider({
             source={{
               uri: `${IMAGE_URL_W130}${movie.poster_path}`,
             }}
-            className="bg-gray-800 items-center justify-center rounded-xl"
             style={{
               width: slideWidth,
               height: height / 4,
             }}
+            className="bg-gray-800 items-center justify-center rounded-xl"
           />
         </Pressable>
         <Text className="text-white font-bold text-base">

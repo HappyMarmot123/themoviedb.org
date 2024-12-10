@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,15 +10,24 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import * as yup from "yup";
 import { Formik } from "formik";
-import { movieService } from "@/hooks/api/movie";
 import { tmdbApi } from "@/hooks/api";
 import { API_KEY, BASE_URL } from "@/constants/Moviedb";
 import { setSessionId, setUsername } from "@/redux/idSlice";
 import { setAccountId } from "@/redux/idSlice";
 import { useAppDispatch } from "@/hooks/useRedux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AxiosError } from "axios";
+import LottieView from "lottie-react-native";
 
 /*
     TODO:
+    yup: 유효성 검사 라이브러리
+    - 바닐라 자바스크립트 빚니스 로직 쓸 필요 없습니다.
+    formik: 폼 관리 라이브러리
+    - useCForm 보다 10배는 더 좋은듯, 굉장히 편리합니다. 
+    - 오브젝트 메서드 체이닝 방식으로 기술합니다.
+    - 자료형, minmax, match, required 등 유효성 검사 쉽게 할 수 있습니다.
+
     yup: 유효성 검사 라이브럴리, 바닐라 자바스크립트 빚니스 로직 쓸 필요가 없어서 너무 좋다.
     formik: 폼 관리 라이브러리, useCForm 보다 10배는 더 좋다. 쓰기 굉장히 편함
 */
@@ -29,6 +38,7 @@ const Login = ({
   setModalVisible: (value: boolean) => void;
 }) => {
   const dispatch = useAppDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   const loginValidationSchema = yup.object().shape({
     username: yup.string().required("아이디를 입력해주세요"),
@@ -37,6 +47,7 @@ const Login = ({
 
   const submit = async (values: { username: string; password: string }) => {
     try {
+      setIsLoading(true);
       const tokenResponse = await tmdbApi.get(
         `${BASE_URL}/authentication/token/new`,
         {
@@ -45,7 +56,7 @@ const Login = ({
       );
       const requestToken = tokenResponse.data.request_token;
 
-      const loginResponse = await tmdbApi.post(
+      await tmdbApi.post(
         `${BASE_URL}/authentication/token/validate_with_login`,
         {
           username: values.username,
@@ -73,6 +84,12 @@ const Login = ({
       const accountId = myDetail.data.id;
       const username = myDetail.data.username;
 
+      await Promise.all([
+        AsyncStorage.setItem("sessionId", sessionId.toString()),
+        AsyncStorage.setItem("accountId", accountId.toString()),
+        AsyncStorage.setItem("username", username),
+      ]);
+
       dispatch(setSessionId(sessionId));
       dispatch(setAccountId(accountId));
       dispatch(setUsername(username));
@@ -83,22 +100,52 @@ const Login = ({
           onPress: () => setModalVisible(false),
         },
       ]);
-    } catch (error) {
-      Alert.alert(
-        "로그인 실패",
-        "로그인 중 오류가 발생했습니다. 다시 시도해주세요.",
-        [{ text: "확인" }]
-      );
+    } catch (error: unknown) {
+      if (
+        error instanceof AxiosError &&
+        (error.response?.data.success as boolean) === false
+      ) {
+        Alert.alert(
+          "로그인 실패",
+          "아이디 혹은 비밀번호를 잘못 입력하셨습니다.",
+          [{ text: "확인" }]
+        );
+      } else {
+        Alert.alert(
+          "로그인 실패",
+          "로그인 중 오류가 발생했습니다. 다시 시도해주세요.",
+          [{ text: "확인" }]
+        );
+      }
+      setIsLoading(false);
     }
   };
 
   return (
     <View className="w-[50vw]">
+      {isLoading && (
+        <>
+          <View className="absolute z-10 h-full items-center">
+            <LottieView
+              source={require("@/assets/lottie/Loading.json")}
+              autoPlay
+              loop
+              style={{
+                width: 200,
+                height: 200,
+              }}
+            />
+          </View>
+        </>
+      )}
+
       <Text style={styles.title}>Login</Text>
       <Formik
         validationSchema={loginValidationSchema}
         initialValues={{ username: "", password: "" }}
         onSubmit={submit}
+        validateOnMount={false} // * isValid = false
+        validateOnChange={true}
       >
         {({
           handleChange,
