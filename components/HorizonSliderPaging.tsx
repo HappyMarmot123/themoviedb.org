@@ -54,6 +54,7 @@ export default function HorizonSliderPaging({
             <Image
               source={require("../assets/images/marmotcon.png")}
               className="w-full h-full"
+              resizeMode="cover"
             />
           </View>
         ))}

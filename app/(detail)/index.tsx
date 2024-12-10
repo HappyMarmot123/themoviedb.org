@@ -1,7 +1,7 @@
 import { movieService } from "@/hooks/api/movie";
 import LottieView from "lottie-react-native";
 import { useLocalSearchParams } from "expo-router";
-import { useState } from "react";
+import { SetStateAction, useCallback, useState } from "react";
 import { useEffect } from "react";
 import {
   View,
@@ -23,6 +23,7 @@ import Label from "@/components/Label";
 import { objType } from "@/assets/type/type";
 import { truncatedString } from "@/hooks/useUtility";
 import useYoutubeLinking from "@/hooks/useYoutubeLinking";
+import { useAppSelector } from "@/hooks/useRedux";
 
 /* 
   TODO:
@@ -39,6 +40,7 @@ import useYoutubeLinking from "@/hooks/useYoutubeLinking";
 export default function DetailScreen() {
   const { height, width } = useWindowDimensions();
   const { id } = useLocalSearchParams();
+  const { sessionId, accountId } = useAppSelector((state: any) => state.id);
 
   const [detailData, setDetailData] = useState<objType | null>(null);
   const [videoData, setVideoData] = useState<any[]>([]);
@@ -47,6 +49,20 @@ export default function DetailScreen() {
   useEffect(() => {
     fetchDetail();
   }, [id]);
+
+  const fetchAddFavorite = async (): Promise<void> => {
+    if (!sessionId || !accountId) return;
+
+    const response = await movieService.favorite_add(
+      { sessionId, accountId },
+      {
+        media_id: Number(id),
+        media_type: "movie",
+        favorite: true,
+      }
+    );
+    console.log(response);
+  };
 
   const fetchDetail = async (): Promise<void> => {
     if (!id) return;
@@ -131,37 +147,68 @@ export default function DetailScreen() {
     return stars;
   };
 
-  const YoutubeElement = ({ data: data }: objType): React.ReactNode => {
-    return (
-      <View key={data.key} style={{ width: width / 1.75, height: height / 5 }}>
-        {/* <Text className="text-white text-base">{JSON.stringify(data)}</Text> */}
-        <View className="flex-1 gap-[2vh]">
-          <Pressable
-            className="relative flex-[0.8]"
-            onPress={() => useYoutubeLinking(data.key)}
-          >
-            <Image
-              className="rounded-lg h-full"
-              source={{
-                uri: `https://img.youtube.com/vi/${data.key}/maxresdefault.jpg`,
-              }}
-            />
-            <FontAwesome
-              name="youtube-play"
-              size={48}
-              color="red"
-              className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2"
-            />
-          </Pressable>
+  const YoutubeElement = useCallback(
+    ({ data: data }: objType): React.ReactNode => {
+      return (
+        <View
+          key={data.key}
+          style={{ width: width / 1.75, height: height / 5 }}
+        >
+          {/* <Text className="text-white text-base">{JSON.stringify(data)}</Text> */}
+          <View className="flex-1 gap-[2vh]">
+            <Pressable
+              className="relative flex-[0.8]"
+              onPress={() => useYoutubeLinking(data.key)}
+            >
+              <Image
+                className="rounded-lg h-full"
+                source={{
+                  uri: `https://img.youtube.com/vi/${data.key}/maxresdefault.jpg`,
+                }}
+              />
+              <FontAwesome
+                name="youtube-play"
+                size={48}
+                color="red"
+                className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2"
+              />
+            </Pressable>
 
-          <Text
-            className="text-white text-lg flex-[0.2] truncate"
-            numberOfLines={1}
-          >
-            {data.name}
-          </Text>
+            <Text
+              className="text-white text-lg flex-[0.2] truncate"
+              numberOfLines={1}
+            >
+              {data.name}
+            </Text>
+          </View>
         </View>
-      </View>
+      );
+    },
+    [width, height]
+  );
+
+  const [favorite, setFavorite] = useState<boolean>(false);
+
+  const handleOnPressFavorite = (): void => {
+    setFavorite(!favorite);
+    fetchAddFavorite();
+  };
+
+  const FavoriteIcon = (): React.ReactNode => {
+    return (
+      <Pressable
+        onPress={() => {
+          handleOnPressFavorite();
+        }}
+      >
+        <MaterialIcons
+          id="love"
+          name={favorite ? "favorite" : "favorite-border"}
+          size={30}
+          color={favorite ? "green" : "white"}
+          className="text-right mr-[2vw]"
+        />
+      </Pressable>
     );
   };
 
@@ -198,13 +245,7 @@ export default function DetailScreen() {
                 resizeMode="stretch"
               />
               <View className="flex-[0.6] ">
-                <MaterialIcons
-                  id="love"
-                  name="favorite-border"
-                  size={30}
-                  color="green"
-                  className="text-right mr-[2vw]"
-                />
+                <FavoriteIcon />
                 <View className="flex flex-row items-center gap-1">
                   {createStars(detailData.vote_average)}
                   <Text className="text-green-700 text-sm ml-1">

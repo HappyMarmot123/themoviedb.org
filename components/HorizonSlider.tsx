@@ -2,7 +2,7 @@ import { useAppSelector } from "@/hooks/useRedux";
 import { useAppDispatch } from "@/hooks/useRedux";
 import { truncateDecimal, truncatedString } from "@/hooks/useUtility";
 import { useSearchContext } from "@/providers/SearchProvider";
-import { fetchMovies } from "@/redux/movieSlice";
+import { favorliteMovies, fetchMovies } from "@/redux/movieSlice";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import {
@@ -35,16 +35,21 @@ export default function HorizonSlider({
 }) {
   const { search } = useSearchContext();
   const dispatch = useAppDispatch();
+  const { sessionId, accountId } = useAppSelector((state: any) => state.id);
   const slideWidth = (width - 40) / 3.39;
 
   const { movies, loading, error } = useAppSelector(
     (state: any) => state.movie
   );
-  // console.log(movies);
+  console.log(movies);
 
   useEffect(() => {
     const keyword = search || DEFAULT_KEYWORD;
-    dispatch(fetchMovies({ keyword, page: "1" }));
+    if (keyword === "favorite") {
+      dispatch(favorliteMovies({ sessionId, accountId }));
+    } else {
+      dispatch(fetchMovies({ keyword, page: "1" }));
+    }
   }, [search]);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {

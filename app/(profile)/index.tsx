@@ -1,35 +1,71 @@
 import Header from "@/components/Header";
+import Login from "@/components/Login";
+import ModalPopup from "@/components/ModalPopup";
+import { useAppSelector } from "@/hooks/useRedux";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
-import { View, Text, SafeAreaView, StyleSheet } from "react-native";
+import { useState } from "react";
+import { View, Text, SafeAreaView, StyleSheet, Pressable } from "react-native";
 
 interface MenuItem {
   id: string;
   name: string;
   label: string;
+  attrVal: () => void;
 }
 
-const menuList: MenuItem[] = [
-  {
-    id: "1",
-    name: "favorite-border",
-    label: "Favorite",
-  },
-];
+const ProfileScreen = () => {
+  const { username } = useAppSelector((state: any) => state.id);
+  console.log(username);
 
-export default function ProfileScreen() {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedId, setSelectedId] = useState("1");
+
+  const menuList: MenuItem[] = [
+    {
+      id: "1",
+      name: "login",
+      label: "Login",
+      attrVal: () => {
+        setModalVisible((prev) => !prev);
+      },
+    },
+    {
+      id: "2",
+      name: "favorite-border",
+      label: "Favorite",
+      attrVal: () => {
+        console.log("Favorite clicked");
+      },
+    },
+  ];
+
   return (
     <SafeAreaView className="bg-black min-h-screen">
+      {modalVisible && (
+        <ModalPopup
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+        >
+          <Login setModalVisible={setModalVisible} />
+        </ModalPopup>
+      )}
       <Header text="Profile" />
       <View style={styles.scrollContainer}>
-        <View className=" items-center">
+        <View className="items-center">
           <View className="bg-gray-400 w-[30vw] h-[30vw] rounded-full"></View>
-          <Text className="text-white font-bold text-2xl my-2">Anonymous</Text>
-          <Text className="text-green-700">Anon</Text>
+          <Text className="text-white font-bold text-2xl my-2">
+            {username || "Anonymous"}
+          </Text>
+          <Text className="text-green-700">username</Text>
         </View>
 
         <View className="menu-nav flex-col gap-6 mt-10">
           {menuList.map((menu: MenuItem) => (
-            <View key={menu.id} className="flex-row items-center gap-2">
+            <Pressable
+              onPress={menu.attrVal}
+              key={menu.id}
+              className="flex-row items-center gap-2"
+            >
               <MaterialIcons
                 name={(menu?.name as any) || "link"}
                 size={24}
@@ -37,13 +73,15 @@ export default function ProfileScreen() {
                 className="text-right mr-[2vw]"
               />
               <Text className="text-white text-xl">{menu.label}</Text>
-            </View>
+            </Pressable>
           ))}
         </View>
       </View>
     </SafeAreaView>
   );
-}
+};
+
+export default ProfileScreen;
 
 const styles = StyleSheet.create({
   container: {

@@ -15,6 +15,17 @@ export interface mainType {
   page: string;
 }
 
+export interface sessionAndAccountType {
+  sessionId: string;
+  accountId: string;
+}
+
+export interface favoriteType {
+  media_id: number;
+  media_type: string;
+  favorite: boolean;
+}
+
 export interface objType {
   [key: string]: any;
 }

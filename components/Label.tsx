@@ -21,6 +21,11 @@ const radioButtons = [
     label: "신규순",
     value: "upcoming",
   },
+  {
+    id: "4",
+    label: "즐겨찾기",
+    value: "favorite",
+  },
 ];
 
 export default function Label({

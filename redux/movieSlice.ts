@@ -1,4 +1,4 @@
-import { mainType } from "@/assets/type/type";
+import { mainType, sessionAndAccountType } from "@/assets/type/type";
 import { movieService } from "@/hooks/api/movie";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -18,6 +18,13 @@ export const fetchMovies = createAsyncThunk(
   "movie/fetchMovies",
   async (obj: mainType) => {
     const response = await movieService.main(obj);
+    return response.data.results;
+  }
+);
+export const favorliteMovies = createAsyncThunk(
+  "movie/fetchMovies",
+  async (obj: sessionAndAccountType) => {
+    const response = await movieService.favorite_list(obj);
     return response.data.results;
   }
 );
