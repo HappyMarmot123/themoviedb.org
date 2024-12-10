@@ -3,8 +3,12 @@
 ### RN + Expo Go App(52ver)
 
 디바이스와 스마트폰의 와이파이를 동일한 것으로 설정하세요.  
-Expo Go 앱에서 QR코드를 스캔하세요.  
-무한로딩 혹은 에러가 발생한다면, npx expo start --tunnel 명령어를 실행하세요.
+터미널 실행명령어: npx expo start --tunnel  
+Expo Go 앱 에러발생시: npx expo start --tunnel
+Expo Go 앱에서 QR코드를 스캔하세요.
+
+Android apk  
+[2024-12-10] ver.1: https://expo.dev/artifacts/eas/8MUmD6kzrrh8tB7Y1DKqcX.apk
 
 ## Why use Expo?
 
