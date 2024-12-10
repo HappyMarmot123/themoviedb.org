@@ -11,6 +11,7 @@ import {
   StyleSheet,
   useWindowDimensions,
   Image,
+  Pressable,
 } from "react-native";
 import { AxiosResponse } from "axios";
 import Header from "@/components/Header";
@@ -20,12 +21,19 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome from "@expo/vector-icons/build/FontAwesome";
 import Label from "@/components/Label";
 import { objType } from "@/assets/type/type";
+import { truncatedString } from "@/hooks/useUtility";
+import useYoutubeLinking from "@/hooks/useYoutubeLinking";
 
 /* 
   TODO:
   React Native의 Image 컴포넌트에서는 CSS의 linear-gradient를 직접 사용할 수 없습니다.
   따라서 react-native-linear-gradient 라이브러리를 설치해야 합니다...
   엑스포의 경우 자체 라이브러리인 expo-linear-gradient를 사용하지 않으면 버블링 이벤트 에러가 생깁니다....;;
+
+  absolute 요소를 정확히 정 중앙에 위치하고 싶은 경우 transform 속성을 사용합니다.
+  transform: [{ translateX: -12 }, { translateY: -12 }]
+          
+  Text attribute 'numberOfLines': 문자열을 한 줄로 제한합니다. 이건 좋네요ㅎㅎ
 */
 
 export default function DetailScreen() {
@@ -40,7 +48,7 @@ export default function DetailScreen() {
     fetchDetail();
   }, [id]);
 
-  const fetchDetail = async () => {
+  const fetchDetail = async (): Promise<void> => {
     if (!id) return;
     setIsLoading(true);
 
@@ -64,7 +72,7 @@ export default function DetailScreen() {
   const responseCheck = (
     keyName: string,
     response: PromiseSettledResult<AxiosResponse<any, any>>
-  ) => {
+  ): void => {
     if (response?.status === "fulfilled" && response?.value?.data) {
       switch (keyName) {
         case "detail":
@@ -85,7 +93,7 @@ export default function DetailScreen() {
     return result;
   };
 
-  if (isLoading) {
+  const Loading = (): React.ReactNode => {
     return (
       <View className="absolute z-10 w-screen h-screen items-center bg-black/90">
         <LottieView
@@ -97,14 +105,17 @@ export default function DetailScreen() {
         <Text className="text-white text-xl">Loading...</Text>
       </View>
     );
-  }
-  const createStars = (voteAverage: number) => {
+  };
+  const createStars = (voteAverage: number): Array<any> => {
     const stars = [];
     const fullStars = Math.floor(voteAverage / 2);
     const decimal = voteAverage % 2;
     const halfStar: boolean = decimal >= 0.5 ? true : false;
+
     for (let i = 0; i < fullStars; i++) {
-      stars.push(<FontAwesome key={i} name="star" size={20} color="green" />);
+      stars.push(
+        <FontAwesome key={`${i}-full`} name="star" size={20} color="green" />
+      );
     }
     if (halfStar) {
       stars.push(
@@ -120,23 +131,43 @@ export default function DetailScreen() {
     return stars;
   };
 
-  const YoutubeElement = ({ data: data }: objType) => {
+  const YoutubeElement = ({ data: data }: objType): React.ReactNode => {
     return (
-      <>
+      <View key={data.key} style={{ width: width / 1.75, height: height / 5 }}>
         {/* <Text className="text-white text-base">{JSON.stringify(data)}</Text> */}
-        <Image
-          key={data.id}
-          source={{
-            uri: `https://img.youtube.com/vi/${data.key}/maxresdefault.jpg`,
-          }}
-          style={{ width: width / 1.5, height: height / 4, borderRadius: 10 }}
-        />
-      </>
+        <View className="flex-1 gap-[2vh]">
+          <Pressable
+            className="relative flex-[0.8]"
+            onPress={() => useYoutubeLinking(data.key)}
+          >
+            <Image
+              className="rounded-lg h-full"
+              source={{
+                uri: `https://img.youtube.com/vi/${data.key}/maxresdefault.jpg`,
+              }}
+            />
+            <FontAwesome
+              name="youtube-play"
+              size={48}
+              color="red"
+              className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2"
+            />
+          </Pressable>
+
+          <Text
+            className="text-white text-lg flex-[0.2] truncate"
+            numberOfLines={1}
+          >
+            {data.name}
+          </Text>
+        </View>
+      </View>
     );
   };
 
   return (
     <SafeAreaView style={[styles.container]}>
+      {isLoading && <Loading />}
       {detailData && (
         <>
           {/* <Text className="text-white text-2xl">{detailData.id}</Text> */}
@@ -168,6 +199,7 @@ export default function DetailScreen() {
               />
               <View className="flex-[0.6] ">
                 <MaterialIcons
+                  id="love"
                   name="favorite-border"
                   size={30}
                   color="green"
