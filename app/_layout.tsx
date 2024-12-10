@@ -1,15 +1,28 @@
 import BottomNavigate from "@/components/BottomNavigate";
 import "../global.css";
 import { UseStorage } from "@/hooks/useStorage";
-import { Provider } from "react-redux";
+import { Provider as ReduxProvider } from "react-redux";
 import { store } from "@/redux";
+import { useAppDispatch } from "@/hooks/useRedux";
+import { loadStoredData } from "@/redux/idSlice";
+import { useEffect } from "react";
 
 export default function Layout() {
-  UseStorage;
-
   return (
-    <Provider store={store}>
-      <BottomNavigate />
-    </Provider>
+    <ReduxProvider store={store}>
+      <StorageProvider>
+        <BottomNavigate />
+      </StorageProvider>
+    </ReduxProvider>
   );
 }
+
+const StorageProvider = ({ children }: { children: React.ReactNode }) => {
+  // UseStorage;
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(loadStoredData());
+  }, [dispatch]);
+
+  return <>{children}</>;
+};
