@@ -33,7 +33,6 @@ import { useAppSelector } from "@/hooks/useRedux";
 
   absolute 요소를 정확히 정 중앙에 위치하고 싶은 경우 transform 속성을 사용합니다.
   transform: [{ translateX: -12 }, { translateY: -12 }]
-  테일윈드: -translate-x-1/2 -translate-y-1/2
           
   Text attribute 'numberOfLines': 문자열을 한 줄로 제한합니다. 이건 좋네요ㅎㅎ
 */
@@ -48,11 +47,11 @@ export default function DetailScreen() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    id && fetchDetail();
+    fetchDetail();
   }, [id]);
 
-  const fetchFavoriteAdd = async (): Promise<void> => {
-    if (!sessionId || !accountId || !id) return;
+  const fetchAddFavorite = async (): Promise<void> => {
+    if (!sessionId || !accountId) return;
 
     const response = await movieService.favorite_add(
       { sessionId, accountId },
@@ -62,6 +61,7 @@ export default function DetailScreen() {
         favorite: true,
       }
     );
+    console.log(response);
   };
 
   const fetchDetail = async (): Promise<void> => {
@@ -96,6 +96,7 @@ export default function DetailScreen() {
           break;
         case "video":
           let videos = videoFilter(response.value.data.results);
+          console.log(videos);
           setVideoData(videos);
           break;
       }
@@ -104,6 +105,7 @@ export default function DetailScreen() {
 
   const videoFilter = (response: any[]): Array<any> => {
     const result = response.filter((item: any) => item.type === "Teaser");
+    // console.log(result[0]);
     return result;
   };
 
@@ -148,7 +150,11 @@ export default function DetailScreen() {
   const YoutubeElement = useCallback(
     ({ data: data }: objType): React.ReactNode => {
       return (
-        <View style={{ width: width / 1.75, height: height / 5 }}>
+        <View
+          key={data.key}
+          style={{ width: width / 1.75, height: height / 5 }}
+        >
+          {/* <Text className="text-white text-base">{JSON.stringify(data)}</Text> */}
           <View className="flex-1 gap-[2vh]">
             <Pressable
               className="relative flex-[0.8]"
@@ -185,7 +191,7 @@ export default function DetailScreen() {
 
   const handleOnPressFavorite = (): void => {
     setFavorite(!favorite);
-    fetchFavoriteAdd();
+    fetchAddFavorite();
   };
 
   const FavoriteIcon = (): React.ReactNode => {
@@ -311,7 +317,7 @@ export default function DetailScreen() {
               contentContainerStyle={{ gap: 20 }}
             >
               {videoData.map((data: any) => (
-                <YoutubeElement key={data.key} data={data} />
+                <YoutubeElement data={data} />
               ))}
             </ScrollView>
             <View className="h-[20vw]" />
