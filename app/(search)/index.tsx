@@ -19,18 +19,23 @@ import { truncatedString } from "@/hooks/useUtility";
 import { useRouter } from "expo-router";
 import LottieView from "lottie-react-native";
 
-{
-  /* TODO: 같은 제품이 중복으로 검색되는 경우가 있습니다. key prop error는 무시해주세요. */
-}
+/* 
+  TODO: 
+  같은 제품이 중복으로 검색되는 경우가 있습니다. 
+  key prop error는 무시해주세요.
 
-{
-  /* 
   SearchProvider: 감싸진 컴포넌트만 useContext를 사용할 수 있습니다.
   scrollEventThrottle: 값을 16밀리초 이하로 설정하면 대부분의 최신
   디스플레이의 재생 빈도에 가깝기 때문에 조절 기능이 효과적으로
   비활성화됩니다. 성능 : 제한은 이벤트 핸들러 실행 빈도를 줄이는데, 이는
-  비용 절감이 됩니다. */
-}
+  비용 절감이 됩니다. 
+  
+  ScrollView의 onScroll 이벤트 객체는 어떤 값을 가지고 있을까?
+  - layoutMeasurement.height : 현재 사용자 화면의 높이값
+  - contentSize.height: 실제 요소의 총 높이값
+  - contentOffset.y: 이동된 축값
+  - velocity.y: 이동 속도 및 이동 방향 (양수: 아래, 음수: 위)
+*/
 
 const MAX_LENGTH = 11;
 
@@ -50,7 +55,6 @@ const SearchView = () => {
   const [searchData, setSearchData] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
     if (search) {
@@ -60,23 +64,22 @@ const SearchView = () => {
 
     setSearchData([]);
     setPage(1);
-    setHasMore(true);
   }, [search]);
 
   const fetchMovies = async (pageNum: number) => {
-    if (isLoading || !hasMore) return;
+    if (isLoading) return;
     if (pageNum >= 5) return Alert.alert("Im Sorry", "No more requests plz :)");
     setIsLoading(true);
 
     try {
-      const r = await movieService.search({
-        query: search,
-        page: pageNum.toString(),
-      });
-      if (r?.data) {
-        setSearchData((prev) => [...prev, ...r.data.results]);
-        setHasMore(pageNum < r.data.total_pages);
-      }
+      const r = await movieService
+        .search({
+          query: search,
+          page: pageNum.toString(),
+        })
+        .then((r) => {
+          r?.data && setSearchData((prev) => [...prev, ...r.data.results]);
+        });
     } catch (error) {
       console.error(error);
     } finally {
@@ -85,10 +88,14 @@ const SearchView = () => {
   };
 
   const handleScroll = ({ nativeEvent }: any) => {
-    const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+    const { layoutMeasurement, contentOffset, contentSize, velocity } =
+      nativeEvent;
     const isCloseToBottom =
       layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
-    const nextPage = isCloseToBottom && !isLoading && hasMore;
+
+    const scrollDirection = velocity.y > 0 ? "down" : "up";
+    const nextPage =
+      isCloseToBottom && !isLoading && scrollDirection === "down";
 
     if (nextPage) {
       setPage((prev) => prev + 1);

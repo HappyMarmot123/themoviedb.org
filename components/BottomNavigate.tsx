@@ -3,9 +3,18 @@ import { Ionicons } from "@expo/vector-icons";
 import { View, Text, Animated } from "react-native";
 import React, { useEffect, useRef } from "react";
 
-// TODO: 엑스포 탭은 app에 존재하는 모든 경로의 index 파일을 자동 라우팅 해줍니다.
-// 따라서 자동 라우팅이 필요 없는 경우에는 Tab선언 후 href 값을 nul로 설정해주세요.
-// expo-router의 Tabs는 기본적으로 각 탭 화면을 메모리에 유지하는 특성이 있습니다.
+/* 
+  TODO: 
+  엑스포 탭은 app에 존재하는 모든 경로의 index 파일을 자동 라우팅 해줍니다.
+  따라서 자동 라우팅이 필요 없는 경우에는 Tab option 세팅이 필요합니다.
+  options={{
+    href: null, // 해당 경로를 탭에서 제외
+    tabBarStyle: { display: "none" }, // Detail 화면에서는 탭 바 숨기기
+  }}
+
+  expo-router의 Tabs는 기본적으로 각 탭 화면을 메모리에 유지하는 특성이 있습니다.
+  backBehavior: 뒤로가기 버튼 클릭 시 이전 화면으로 이동할지 여부를 설정합니다.
+*/
 
 export default function BottomNavigate() {
   const IconComponent = ({
@@ -93,6 +102,7 @@ export default function BottomNavigate() {
 
   return (
     <Tabs
+      backBehavior="history"
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: "green",

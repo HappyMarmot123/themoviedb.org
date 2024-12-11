@@ -5,22 +5,27 @@ import {
   Vibration,
   Animated,
   EasingFunction,
-  useAnimatedValue,
   Easing,
   Keyboard,
+  StyleSheet,
 } from "react-native";
 
-import Header from "./Header";
 import { AntDesign } from "@expo/vector-icons";
 import { useSearchContext } from "@/providers/SearchProvider";
 import { useState } from "react";
+/*
+  TODO:
+  useAnimatedValue() 모바일뷰는 문제 없지만 브라우저에서는 에러 발생;;
+  React Native의 공식 API가 아니다. new Animated.Value() 사용할 것
+*/
+const opacity = new Animated.Value(1);
 
 export default function SearchHeader({ text }: { text: string }) {
   const state = useSearchContext();
   const [search, setSearch] = useState(state.search);
-  let opacity = useAnimatedValue(1);
 
   const handleOnPress = () => {
+    opacity.setValue(0);
     Keyboard.dismiss();
     Vibration.vibrate(100);
     state.addToSearch(search);
@@ -28,7 +33,6 @@ export default function SearchHeader({ text }: { text: string }) {
   };
 
   const animate = (easing: EasingFunction) => {
-    opacity.setValue(0);
     Animated.timing(opacity, {
       toValue: 1,
       duration: 1200,
@@ -37,23 +41,21 @@ export default function SearchHeader({ text }: { text: string }) {
     }).start();
   };
 
-  const size = opacity.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 45],
-  });
-
   const animatedStyles = [
     {
       opacity: opacity,
-      width: size,
-      height: size,
     },
   ];
 
+  // const size = opacity.interpolate({
+  //   inputRange: [0, 1],
+  //   outputRange: [0, 45],
+  // });
+
   return (
     <>
-      <View className="relative flex-row gap-5 w-full">
-        <View className="flex-[0.85]">
+      <View className="relative flex-row gap-3 w-full">
+        <View className="flex-[0.875]">
           <View className="border-[1px] border-orange-300 my-6">
             <TextInput
               value={search}
@@ -70,12 +72,9 @@ export default function SearchHeader({ text }: { text: string }) {
         </View>
         <Pressable
           onPress={handleOnPress}
-          className="border-[1px] border-green-700 flex-[0.15] my-6 "
+          className="relative border-[1px] border-green-700 flex-[0.125] my-6"
         >
-          <Animated.View
-            className="flex items-center justify-center"
-            style={animatedStyles}
-          >
+          <Animated.View style={[animatedStyles, styles.container]}>
             <AntDesign name="search1" size={24} color="#15803d" />
           </Animated.View>
         </Pressable>
@@ -83,3 +82,12 @@ export default function SearchHeader({ text }: { text: string }) {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -12 }, { translateY: -12 }],
+  },
+});

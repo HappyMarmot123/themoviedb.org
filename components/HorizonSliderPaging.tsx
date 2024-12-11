@@ -4,9 +4,11 @@ import { View, ScrollView, Text, Image } from "react-native";
 export default function HorizonSliderPaging({
   height,
   width,
+  paddingHorizontal,
 }: {
   height: number;
   width: number;
+  paddingHorizontal: number;
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -14,7 +16,7 @@ export default function HorizonSliderPaging({
   // 스크롤 이벤트 핸들러
   const handleScroll = (event: any) => {
     const contentOffset = event.nativeEvent.contentOffset.x;
-    const slideIndex = Math.round(contentOffset / (width - 40));
+    const slideIndex = Math.round(contentOffset / (width - paddingHorizontal));
     setCurrentIndex(slideIndex);
   };
 
@@ -24,7 +26,7 @@ export default function HorizonSliderPaging({
       setCurrentIndex(nextIndex);
 
       scrollViewRef.current?.scrollTo({
-        x: (width - 40) * nextIndex,
+        x: (width - paddingHorizontal) * nextIndex,
         animated: true,
       });
     }, 3000);
@@ -46,21 +48,28 @@ export default function HorizonSliderPaging({
         {[0, 1, 2].map((num, index) => (
           <View
             key={num}
-            style={{ width: width - 40, height: (height - 40) / 3 }}
+            style={{
+              width: width - paddingHorizontal,
+              height: (height - 40) / 3,
+            }}
             className={`bg-gray-${
               800 - index * 100
             } items-center justify-center`}
           >
             <Image
               source={require("../assets/images/marmotcon.png")}
-              className="w-full h-full"
+              // 테일윈드 w-full h-full 안먹히는 이슈가 있다;;
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
               resizeMode="cover"
             />
           </View>
         ))}
       </ScrollView>
       <View
-        style={{ width: width - 40 }}
+        style={{ width: width - paddingHorizontal }}
         className="absolute left-0 bottom-0 flex-col items-center bg-[#00000057] space-x-2"
       >
         <Text className="text-white font-bold text-xl">themoviedb.org</Text>

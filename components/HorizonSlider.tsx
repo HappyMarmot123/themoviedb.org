@@ -4,7 +4,7 @@ import { truncateDecimal, truncatedString } from "@/hooks/useUtility";
 import { useSearchContext } from "@/providers/SearchProvider";
 import { favorliteMovies, fetchMovies } from "@/redux/movieSlice";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   View,
   ScrollView,
@@ -36,7 +36,8 @@ export default function HorizonSlider({
   const { search } = useSearchContext();
   const dispatch = useAppDispatch();
   const { sessionId, accountId } = useAppSelector((state: any) => state.id);
-  const slideWidth = (width - 40) / 3.39;
+  const scrollViewRef = useRef<ScrollView>(null);
+  const slideWidth = (width - 20) / 3.4;
 
   const { movies, loading, error } = useAppSelector(
     (state: any) => state.movie
@@ -50,6 +51,10 @@ export default function HorizonSlider({
       dispatch(fetchMovies({ keyword, page: "1" }));
     }
   }, [search]);
+
+  useEffect(() => {
+    scrollViewRef.current?.scrollTo({ y: 0, animated: true });
+  }, [movies]);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const contentOffset = event.nativeEvent.contentOffset.x;
@@ -68,7 +73,7 @@ export default function HorizonSlider({
 
   const sliderItems = (movie: movieType) => {
     return (
-      <View key={movie.id} className="flex-col gap-3">
+      <View key={movie.id} className="flex-col gap-1">
         <Pressable onPress={() => detailRoute(movie)}>
           <Image
             source={{
@@ -76,7 +81,7 @@ export default function HorizonSlider({
             }}
             style={{
               width: slideWidth,
-              height: height / 4,
+              height: height / 5,
             }}
             className="bg-gray-800 items-center justify-center rounded-xl"
           />
@@ -94,6 +99,7 @@ export default function HorizonSlider({
   return (
     <View className="slide-view-wrapper">
       <ScrollView
+        ref={scrollViewRef}
         horizontal
         showsHorizontalScrollIndicator={false}
         onScroll={handleScroll}

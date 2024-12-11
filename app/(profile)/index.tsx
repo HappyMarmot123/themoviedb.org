@@ -75,14 +75,6 @@ const ProfileScreen = () => {
   return (
     <>
       <SafeAreaView className="bg-black min-h-screen">
-        {modalVisible && (
-          <ModalPopup
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
-          >
-            <Login setModalVisible={setModalVisible} />
-          </ModalPopup>
-        )}
         <Header text="Profile" />
         <View style={styles.scrollContainer}>
           <View className="items-center">

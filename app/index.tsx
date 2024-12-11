@@ -20,7 +20,11 @@ const HomeScreen = () => {
       <SafeAreaView style={[styles.container]}>
         <Header text="Movies" />
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <HorizonSliderPaging height={height} width={width} />
+          <HorizonSliderPaging
+            height={height}
+            width={width}
+            paddingHorizontal={20}
+          />
           <Label title="See All Movies" buttonText="Filter">
             <HorizonSlider height={height} width={width} />
           </Label>
@@ -38,7 +42,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingBottom: 20,
     flexDirection: "column",
     flexGrow: 1,
