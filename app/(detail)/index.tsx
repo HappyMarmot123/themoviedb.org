@@ -34,6 +34,9 @@ import { useAppSelector } from "@/hooks/useRedux";
   테일윈드: -translate-x-1/2 -translate-y-1/2
 
   Text attribute 'numberOfLines': 문자열을 한 줄로 제한합니다. 이건 좋네요ㅎㅎ
+  aspect-radio: 2024년 4위로 선정된 CSS 속성입니다. 
+  - safari 미지원 이슈도 최신 버전 브라우저에서 호환되는 것으로 확인됩니다.
+  - 가로세로비 비율을 유지하는 속성으로 반응형 웹 디자인에 유용합니다.
 */
 
 export default function DetailScreen() {
@@ -52,7 +55,7 @@ export default function DetailScreen() {
   const fetchFavoriteAdd = async (): Promise<void> => {
     if (!sessionId || !accountId || !id) return;
 
-    const response = await movieService.favorite_add(
+    await movieService.favorite_add(
       { sessionId, accountId },
       {
         media_id: Number(id),
@@ -158,6 +161,10 @@ export default function DetailScreen() {
                 source={{
                   uri: `https://img.youtube.com/vi/${data.key}/maxresdefault.jpg`,
                 }}
+                onError={(e) =>
+                  console.log("이미지 로딩 에러:", e.nativeEvent.error)
+                }
+                defaultSource={require("@/assets/images/marmotcon.png")}
               />
               <FontAwesome
                 name="youtube-play"
@@ -205,6 +212,63 @@ export default function DetailScreen() {
     );
   };
 
+  const MovieInfoDetail = ({ data: detailData }: objType): React.ReactNode => {
+    return (
+      <View
+        className="mt-[4vw] gap-[4vw] flex flex-row"
+        style={{ minHeight: height / 4 }}
+      >
+        <Image
+          className="flex-[0.4] rounded-md aspect-[2/3]"
+          source={{ uri: `${IMAGE_URL_W300}${detailData?.poster_path}` }}
+          onError={(e) => console.log("이미지 로딩 에러:", e.nativeEvent.error)}
+          defaultSource={require("@/assets/images/marmotcon.png")}
+          resizeMode="cover"
+        />
+        <View className="flex-[0.6] flex-col justify-between">
+          <View className="flex-1 gap-2">
+            <FavoriteIcon />
+            <View className="flex flex-row items-center gap-1">
+              {createStars(detailData?.vote_average)}
+              <Text className="text-green-700 text-sm ml-1">
+                ({detailData?.vote_count})
+              </Text>
+            </View>
+            <Text className="text-green-700 text-base">
+              Revenue: ${detailData?.revenue.toLocaleString()}
+            </Text>
+            <Text className="text-white text-base">
+              Release Date: {detailData?.release_date}
+            </Text>
+            <Text className="text-white text-base">
+              Country: {detailData?.origin_country}
+            </Text>
+            <Text className="text-white text-base">
+              Language: {detailData?.original_language}
+            </Text>
+          </View>
+          <View className="mt-2">
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              decelerationRate="normal"
+              snapToAlignment="start"
+              contentContainerStyle={{ gap: 10 }}
+            >
+              {detailData?.genres?.map((data: any) => (
+                <View key={data.id}>
+                  <Text className="text-white text-base border border-[#fdba74] rounded-sm px-[2vw] py-[1vw]">
+                    {data.name}
+                  </Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <SafeAreaView style={[styles.container]}>
       {isLoading && <Loading />}
@@ -226,67 +290,7 @@ export default function DetailScreen() {
                 className="w-full h-full object-contain"
               />
             </View>
-            <View
-              className="mt-[4vw] gap-[4vw] flex flex-row "
-              style={{
-                height: height / 4,
-              }}
-            >
-              <Image
-                source={{ uri: `${IMAGE_URL_W300}${detailData.poster_path}` }}
-                className="flex-[0.4] h-full rounded-md"
-                resizeMode="stretch"
-              />
-              <View className="flex-[0.6] ">
-                <FavoriteIcon />
-                <View className="flex flex-row items-center gap-1">
-                  {createStars(detailData.vote_average)}
-                  <Text className="text-green-700 text-sm ml-1">
-                    ({detailData.vote_count})
-                  </Text>
-                </View>
-                <View className="mb-[2vw]">
-                  <Text className="text-green-700 text-base">
-                    Revenue: ${detailData.revenue.toLocaleString()}
-                  </Text>
-                </View>
-                <View className="flex flex-row items-baseline">
-                  <Text className="text-white text-base">Release Date: </Text>
-                  <Text className="text-white text-base">
-                    {detailData.release_date}
-                  </Text>
-                </View>
-                <View className="flex flex-row items-baseline">
-                  <Text className="text-white text-base">Country: </Text>
-                  <Text className="text-white text-base">
-                    {detailData.origin_country}
-                  </Text>
-                </View>
-                <View className="flex flex-row items-baseline">
-                  <Text className="text-white text-base">Language: </Text>
-                  <Text className="text-white text-base">
-                    {detailData.original_language}
-                  </Text>
-                </View>
-                <ScrollView
-                  horizontal
-                  className="mt-[4vw]"
-                  showsHorizontalScrollIndicator={false}
-                  decelerationRate="normal"
-                  snapToAlignment="start"
-                  contentContainerStyle={{ gap: 10 }}
-                >
-                  {/* <Text className="text-white">{JSON.stringify(detailData.genres)}</Text> */}
-                  {detailData.genres.map((data: any) => (
-                    <View key={data.id}>
-                      <Text className="text-white text-base border border-[#fdba74] rounded-sm px-[2vw] py-[1vw]">
-                        {data.name}
-                      </Text>
-                    </View>
-                  ))}
-                </ScrollView>
-              </View>
-            </View>
+            <MovieInfoDetail data={detailData} />
             <View className="px-[2vw] py-[6vw]">
               <View>
                 <Text className="text-gray-500 text-xl font-bold mb-[2vw]">
