@@ -1,6 +1,6 @@
 import { movieService } from "@/hooks/api/movie";
 import LottieView from "lottie-react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useState } from "react";
 import { useEffect } from "react";
 import {
@@ -22,6 +22,7 @@ import FontAwesome from "@expo/vector-icons/build/FontAwesome";
 import { objType } from "@/assets/type/type";
 import useYoutubeLinking from "@/hooks/useYoutubeLinking";
 import { useAppSelector } from "@/hooks/useRedux";
+import React from "react";
 
 /* 
   TODO:
@@ -48,9 +49,20 @@ export default function DetailScreen() {
   const [videoData, setVideoData] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      // Expo 포커스를 얻을 때 상태 초기화
+      setFavorite(false);
+    }, [])
+  );
+
   useEffect(() => {
     id && fetchDetail();
   }, [id]);
+
+  useEffect(() => {
+    console.log(123);
+  }, []);
 
   const fetchFavoriteAdd = async (): Promise<void> => {
     if (!sessionId || !accountId || !id) return;
@@ -164,7 +176,7 @@ export default function DetailScreen() {
                 onError={(e) =>
                   console.log("이미지 로딩 에러:", e.nativeEvent.error)
                 }
-                defaultSource={require("@/assets/images/marmotcon.png")}
+                defaultSource={require("@/assets/images/appIcon.png")}
               />
               <FontAwesome
                 name="youtube-play"
@@ -222,7 +234,7 @@ export default function DetailScreen() {
           className="flex-[0.4] rounded-md aspect-[2/3]"
           source={{ uri: `${IMAGE_URL_W300}${detailData?.poster_path}` }}
           onError={(e) => console.log("이미지 로딩 에러:", e.nativeEvent.error)}
-          defaultSource={require("@/assets/images/marmotcon.png")}
+          defaultSource={require("@/assets/images/appIcon.png")}
           resizeMode="cover"
         />
         <View className="flex-[0.6] flex-col justify-between">

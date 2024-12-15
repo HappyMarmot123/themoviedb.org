@@ -8,6 +8,7 @@ Expo Go 앱 에러발생시: npx expo start --tunnel
 Expo Go 앱에서 QR코드를 스캔하세요.
 
 Android apk  
+**[2024-12-15] ver.2:** https://expo.dev/artifacts/eas/izW8w7qDBnfTp4f6p6TzK6.apk
 [2024-12-10] ver.1: https://expo.dev/artifacts/eas/8MUmD6kzrrh8tB7Y1DKqcX.apk
 
 ## Why use Expo?
@@ -20,9 +21,9 @@ Expo는 개발 서버를 제공하며, **핫 리로드(Hot Reloading)**와 라�
 
 ## Which project did i cloned
 
-- 참조링크1 : https://developers.themoviedb.org/3
+- 참조링크1 : https://play.google.com/store/apps/details?id=uz.isystem.tmdbapp&hl=en_US
 - 참조링크2 : https://www.themoviedb.org/
-- 참조링크3 : https://play.google.com/store/apps/details?id=uz.isystem.tmdbapp&hl=en_US
+- API링크 : https://developers.themoviedb.org/3
 
 ## 제약사항 및 코딩과제
 
@@ -47,12 +48,6 @@ Expo는 개발 서버를 제공하며, **핫 리로드(Hot Reloading)**와 라�
   ※ 참조링크3을 휴대폰에 설치하시어 참조하면서 모바일 UI/UX 를 구성해주세요.
   ※ 안드로이드 기준으로 제출해주세요.
 
-## 진행사항
-
-구현(필수사항) - 목록화면, 검색화면, 상세화면, 평점주기, 즐겨찾기, 유투브(웹,앱)영상열기 등  
-미구현(필수사항) - 평점주기  
-미구현(선택사항) - 카메라, 사진등록
-
 ### 버그리스트
 
 [2024-12-05 ~ 2024-12-10]
@@ -66,9 +61,7 @@ Expo는 개발 서버를 제공하며, **핫 리로드(Hot Reloading)**와 라�
 - ~~검색: 검색 목록 클릭 후 스마트폰 디바이스의 '뒤로가기' 버튼 클릭 시 홈으로 가는 이슈 (세팅 필요)~~
 - ~~상세: 디바이스 크기에 따른 영화 '장르태그' 슬라이드가 가려지는 이슈~~
 - ~~프로필: 로그인 팝업 및 프로필 정상화~~
-- 로그인: 로그인 팝업 첫 마운트 시 로그인 버튼 (isValid default value false) 동작 안하는 이슈
+- ~~라이브러리: qs 및 lodash 사용하여 코드 개선하기~~
 - 즐겨찾기: 기능만 구현됬으며 사용자 편의성과 디자인 개선 필요함
-- API: api 조회는 빠르지만 이미지 조회 속도 개선 필요함
-- 라이브러리: qs 및 lodash 사용하여 코드 개선하기
 
 eas build -p android --profile preview

@@ -18,12 +18,11 @@ import { IMAGE_URL_W130 } from "@/constants/Moviedb";
 import { truncatedString } from "@/hooks/useUtility";
 import { useRouter } from "expo-router";
 import LottieView from "lottie-react-native";
+import uniqBy from "lodash.uniqby";
+import isNumber from "lodash.isnumber";
 
 /* 
   TODO: 
-  같은 제품이 중복으로 검색되는 경우가 있습니다. 
-  key prop error는 무시해주세요.
-
   SearchProvider: 감싸진 컴포넌트만 useContext를 사용할 수 있습니다.
   scrollEventThrottle: 값을 16밀리초 이하로 설정하면 대부분의 최신
   디스플레이의 재생 빈도에 가깝기 때문에 조절 기능이 효과적으로
@@ -35,6 +34,10 @@ import LottieView from "lottie-react-native";
   - contentSize.height: 실제 요소의 총 높이값
   - contentOffset.y: 이동된 축값
   - velocity.y: 이동 속도 및 이동 방향 (양수: 아래, 음수: 위)
+
+  prev(setState prop)
+  - prev를 사용해 항상 최신 상태 기반으로 업데이트 합니다.
+  - 비동기 상태 업데이트에도 안전하며 리액트 권장 방식입니다.
 */
 
 const MAX_LENGTH = 11;
@@ -67,6 +70,7 @@ const SearchView = () => {
   }, [search]);
 
   const fetchMovies = async (pageNum: number) => {
+    console.log(isNumber(pageNum));
     if (isLoading) return;
     if (pageNum >= 5) return Alert.alert("Im Sorry", "No more requests plz :)");
     setIsLoading(true);
@@ -78,7 +82,8 @@ const SearchView = () => {
           page: pageNum.toString(),
         })
         .then((r) => {
-          r?.data && setSearchData((prev) => [...prev, ...r.data.results]);
+          r?.data &&
+            setSearchData((prev) => uniqBy([...prev, ...r.data.results], "id"));
         });
     } catch (error) {
       console.error(error);
@@ -93,7 +98,7 @@ const SearchView = () => {
     const isCloseToBottom =
       layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
 
-    const scrollDirection = velocity.y > 0 ? "down" : "up";
+    const scrollDirection = velocity?.y > 0 ? "down" : "up";
     const nextPage =
       isCloseToBottom && !isLoading && scrollDirection === "down";
 
@@ -130,7 +135,7 @@ const SearchView = () => {
         {searchData.length > 0 && (
           <View className="flex-row gap-4 flex-wrap justify-between">
             {searchData.map((data) => (
-              <View key={`${data.title}-${data.id}`} className="flex-col gap-1">
+              <View key={`${data.id}`} className="flex-col gap-1">
                 <View
                   className="bg-gray-300 rounded-lg overflow-hidden"
                   style={{ width: (width - 56) / 2, height: height / 3.5 }}
@@ -145,6 +150,9 @@ const SearchView = () => {
                         height: "100%",
                         objectFit: "cover",
                       }}
+                      onError={(e) =>
+                        console.log("이미지 로딩 에러:", e.nativeEvent.error)
+                      }
                       alt={data?.title}
                     />
                   </Pressable>
