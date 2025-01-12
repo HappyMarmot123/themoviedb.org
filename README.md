@@ -1,4 +1,4 @@
-# Project
+# 외국 영화 애플리케이션 클론코딩
 
 ### RN + Expo Go App(52ver)
 
@@ -11,7 +11,7 @@ Expo Go 앱에서 QR코드를 스캔하세요.
 apk앱 빌드: eas build -p android --profile preview
 
 Android apk  
-**[2024-12-15] ver.2:** https://expo.dev/artifacts/eas/izW8w7qDBnfTp4f6p6TzK6.apk
+**[2024-12-15] ver.2:** https://expo.dev/artifacts/eas/jM1XLnbGf3YsXkorueYmSC.apk
 [2024-12-10] ver.1: https://expo.dev/artifacts/eas/8MUmD6kzrrh8tB7Y1DKqcX.apk
 
 ## Why use Expo?
