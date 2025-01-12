@@ -176,7 +176,7 @@ export default function DetailScreen() {
                 onError={(e) =>
                   console.log("이미지 로딩 에러:", e.nativeEvent.error)
                 }
-                defaultSource={require("@/assets/images/appIcon.png")}
+                defaultSource={require("@/assets/images/icon.png")}
               />
               <FontAwesome
                 name="youtube-play"
@@ -234,7 +234,7 @@ export default function DetailScreen() {
           className="flex-[0.4] rounded-md aspect-[2/3]"
           source={{ uri: `${IMAGE_URL_W300}${detailData?.poster_path}` }}
           onError={(e) => console.log("이미지 로딩 에러:", e.nativeEvent.error)}
-          defaultSource={require("@/assets/images/appIcon.png")}
+          defaultSource={require("@/assets/images/icon.png")}
           resizeMode="cover"
         />
         <View className="flex-[0.6] flex-col justify-between">

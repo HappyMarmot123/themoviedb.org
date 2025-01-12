@@ -3,9 +3,12 @@
 ### RN + Expo Go App(52ver)
 
 디바이스와 스마트폰의 와이파이를 동일한 것으로 설정하세요.  
-터미널 실행명령어: npx expo start --tunnel  
+터미널 실행명령어: npx expo start
 Expo Go 앱 에러발생시: npx expo start --tunnel
 Expo Go 앱에서 QR코드를 스캔하세요.
+
+앱 빌드: npx run prebuild
+apk앱 빌드: eas build -p android --profile preview
 
 Android apk  
 **[2024-12-15] ver.2:** https://expo.dev/artifacts/eas/izW8w7qDBnfTp4f6p6TzK6.apk
@@ -63,5 +66,3 @@ Expo는 개발 서버를 제공하며, **핫 리로드(Hot Reloading)**와 라�
 - ~~프로필: 로그인 팝업 및 프로필 정상화~~
 - ~~라이브러리: qs 및 lodash 사용하여 코드 개선하기~~
 - 즐겨찾기: 기능만 구현됬으며 사용자 편의성과 디자인 개선 필요함
-
-eas build -p android --profile preview
