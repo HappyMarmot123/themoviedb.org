@@ -1,17 +1,20 @@
 # 외국 영화 애플리케이션 클론코딩
 
-### RN + Expo Go App(52ver)
+![Image](https://github.com/user-attachments/assets/af1ad5f0-3b53-4354-9c47-e087f2f1ff0d)
+![Image](https://github.com/user-attachments/assets/7b2aaa29-775b-4ae8-8131-a0a572e0dc3e)
+
+### RN + Expo Go App(52ver) + Node(18ver)
 
 디바이스와 스마트폰의 와이파이를 동일한 것으로 설정하세요.  
-터미널 실행명령어: npx expo start
-Expo Go 앱 에러발생시: npx expo start --tunnel
+터미널 실행명령어: npx expo start  
+Expo Go 앱 에러발생시: npx expo start --tunnel  
 Expo Go 앱에서 QR코드를 스캔하세요.
 
-앱 빌드: npx run prebuild
+앱 빌드: npx expo prebuild  
 apk앱 빌드: eas build -p android --profile preview
 
 Android apk  
-**[2024-12-15] ver.2:** https://expo.dev/artifacts/eas/jM1XLnbGf3YsXkorueYmSC.apk
+**[2024-12-15] ver.2:** https://expo.dev/artifacts/eas/jM1XLnbGf3YsXkorueYmSC.apk  
 [2024-12-10] ver.1: https://expo.dev/artifacts/eas/8MUmD6kzrrh8tB7Y1DKqcX.apk
 
 ## Why use Expo?

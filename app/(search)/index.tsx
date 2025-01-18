@@ -20,6 +20,7 @@ import { useRouter } from "expo-router";
 import LottieView from "lottie-react-native";
 import uniqBy from "lodash.uniqby";
 import isNumber from "lodash.isnumber";
+import tryCatchFinally from "@/hooks/tryCatchFinally";
 
 /* 
   TODO: 
@@ -70,25 +71,25 @@ const SearchView = () => {
   }, [search]);
 
   const fetchMovies = async (pageNum: number) => {
-    console.log(isNumber(pageNum));
     if (isLoading) return;
     if (pageNum >= 5) return Alert.alert("Im Sorry", "No more requests plz :)");
     setIsLoading(true);
 
-    try {
-      const r = await movieService
-        .search({
-          query: search,
-          page: pageNum.toString(),
-        })
-        .then((r) => {
-          r?.data &&
-            setSearchData((prev) => uniqBy([...prev, ...r.data.results], "id"));
-        });
-    } catch (error) {
+    const { result, error } = await tryCatchFinally({
+      promise: movieService.search({
+        query: search,
+        page: pageNum.toString(),
+      }),
+      retries: 3,
+      delay: 1000,
+      finallyCallback: () => setIsLoading(false),
+    });
+
+    if (result?.data) {
+      setSearchData((prev) => uniqBy([...prev, ...result.data.results], "id"));
+    }
+    if (error) {
       console.error(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
