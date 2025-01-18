@@ -1,7 +1,7 @@
 # 외국 영화 애플리케이션 클론코딩
 
-![Image](https://github.com/user-attachments/assets/af1ad5f0-3b53-4354-9c47-e087f2f1ff0d)
-![Image](https://github.com/user-attachments/assets/7b2aaa29-775b-4ae8-8131-a0a572e0dc3e)
+<img src="https://github.com/user-attachments/assets/af1ad5f0-3b53-4354-9c47-e087f2f1ff0d" width="250" />
+<img src="https://github.com/user-attachments/assets/7b2aaa29-775b-4ae8-8131-a0a572e0dc3e" width="250" />
 
 ### RN + Expo Go App(52ver) + Node(18ver)
 
