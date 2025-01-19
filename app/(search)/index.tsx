@@ -14,7 +14,6 @@ import {
 import { useEffect, useMemo, useRef, useState } from "react";
 import { movieService } from "@/hooks/api/movie";
 import { SearchProvider, useSearchContext } from "@/providers/SearchProvider";
-import { IMAGE_URL_W130 } from "@/constants/Moviedb";
 import { truncatedString } from "@/hooks/useUtility";
 import { useRouter } from "expo-router";
 import LottieView from "lottie-react-native";
@@ -144,7 +143,7 @@ const SearchView = () => {
                   <Pressable onPress={() => detailRoute(data.id)}>
                     <Image
                       source={{
-                        uri: `${IMAGE_URL_W130}/${data?.poster_path}`,
+                        uri: `${process.env.IMAGE_URL_W130}/${data?.poster_path}`,
                       }}
                       style={{
                         width: "100%",

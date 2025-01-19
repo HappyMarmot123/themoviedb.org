@@ -15,7 +15,6 @@ import {
 } from "react-native";
 import { AxiosResponse } from "axios";
 import Header from "@/components/Header";
-import { IMAGE_URL_W1920, IMAGE_URL_W300 } from "@/constants/Moviedb";
 import { LinearGradient } from "expo-linear-gradient";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import FontAwesome from "@expo/vector-icons/build/FontAwesome";
@@ -232,7 +231,9 @@ export default function DetailScreen() {
       >
         <Image
           className="flex-[0.4] rounded-md aspect-[2/3]"
-          source={{ uri: `${IMAGE_URL_W300}${detailData?.poster_path}` }}
+          source={{
+            uri: `${process.env.IMAGE_URL_W300}${detailData?.poster_path}`,
+          }}
           onError={(e) => console.log("이미지 로딩 에러:", e.nativeEvent.error)}
           defaultSource={require("@/assets/images/icon.png")}
           resizeMode="cover"
@@ -297,7 +298,7 @@ export default function DetailScreen() {
               />
               <Image
                 source={{
-                  uri: `${IMAGE_URL_W1920}${detailData.backdrop_path}`,
+                  uri: `${process.env.IMAGE_URL_W1920}${detailData.backdrop_path}`,
                 }}
                 className="w-full h-full object-contain"
               />

@@ -15,7 +15,6 @@ import {
   Pressable,
 } from "react-native";
 import { movieType } from "@/assets/type/type";
-import { IMAGE_URL_W130 } from "@/constants/Moviedb";
 
 /*
   TODO: react-redux
@@ -77,7 +76,7 @@ export default function HorizonSlider({
         <Pressable onPress={() => detailRoute(movie)}>
           <Image
             source={{
-              uri: `${IMAGE_URL_W130}${movie.poster_path}`,
+              uri: `${process.env.IMAGE_URL_W130}${movie.poster_path}`,
             }}
             style={{
               width: slideWidth,

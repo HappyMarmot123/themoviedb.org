@@ -11,7 +11,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import * as yup from "yup";
 import { Formik } from "formik";
 import { tmdbApi } from "@/hooks/api";
-import { API_KEY, BASE_URL } from "@/constants/Moviedb";
 import { setSessionId, setUsername } from "@/redux/idSlice";
 import { setAccountId } from "@/redux/idSlice";
 import { useAppDispatch } from "@/hooks/useRedux";
@@ -49,34 +48,34 @@ const Login = ({
     try {
       setIsLoading(true);
       const tokenResponse = await tmdbApi.get(
-        `${BASE_URL}/authentication/token/new`,
+        `${process.env.BASE_URL}/authentication/token/new`,
         {
-          params: { api_key: API_KEY },
+          params: { api_key: process.env.API_KEY },
         }
       );
       const requestToken = tokenResponse.data.request_token;
 
       await tmdbApi.post(
-        `${BASE_URL}/authentication/token/validate_with_login`,
+        `${process.env.BASE_URL}/authentication/token/validate_with_login`,
         {
           username: values.username,
           password: values.password,
           request_token: requestToken,
         },
-        { params: { api_key: API_KEY } }
+        { params: { api_key: process.env.API_KEY } }
       );
 
       const sessionResponse = await tmdbApi.post(
-        `${BASE_URL}/authentication/session/new`,
+        `${process.env.BASE_URL}/authentication/session/new`,
         { request_token: requestToken },
-        { params: { api_key: API_KEY } }
+        { params: { api_key: process.env.API_KEY } }
       );
 
       const sessionId = sessionResponse.data.session_id;
 
-      const myDetail = await tmdbApi.get(`${BASE_URL}/account`, {
+      const myDetail = await tmdbApi.get(`${process.env.BASE_URL}/account`, {
         params: {
-          api_key: API_KEY,
+          api_key: process.env.API_KEY,
           session_id: sessionId,
         },
       });

@@ -1,9 +1,9 @@
 import axios from "axios";
-import { API_KEY, BASE_URL } from "@/constants/Moviedb";
+// import { API_KEY, BASE_URL } from "react-native-dotenv";
 
 export const tmdbApi = axios.create({
-  baseURL: BASE_URL,
+  baseURL: process.env.BASE_URL,
   params: {
-    api_key: API_KEY,
+    api_key: process.env.API_KEY,
   },
 });
