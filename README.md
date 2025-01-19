@@ -1,7 +1,5 @@
-# 외국 영화 애플리케이션 클론코딩
-
-<img src="https://github.com/user-attachments/assets/af1ad5f0-3b53-4354-9c47-e087f2f1ff0d" width="250" />
-<img src="https://github.com/user-attachments/assets/7b2aaa29-775b-4ae8-8131-a0a572e0dc3e" width="250" />
+<img src="https://github.com/user-attachments/assets/af1ad5f0-3b53-4354-9c47-e087f2f1ff0d" width="220" />
+<img src="https://github.com/user-attachments/assets/7b2aaa29-775b-4ae8-8131-a0a572e0dc3e" width="220" />
 
 ## Update List  
 이슈탭에서 버그 및 업데이트 내역을 확인할 수 있습니다
